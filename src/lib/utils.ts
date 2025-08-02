@@ -1,6 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { formatDistanceToNow, parseISO, format } from "date-fns";
+import { authClient } from "./auth-client";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -59,3 +60,9 @@ export function formatNumber(value: number): string {
   }
   return value.toString();
 }
+
+export const getToken = async ({ headers }: { headers: Headers }) => {
+  const { data } = await authClient.getSession({}, { headers: headers });
+
+  return data?.session.token;
+};
