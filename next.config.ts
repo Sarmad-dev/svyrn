@@ -1,3 +1,4 @@
+import { config } from "@/lib/config";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
@@ -20,6 +21,14 @@ const nextConfig: NextConfig = {
         port: "",
       },
     ],
+  },
+  rewrites: async () => {
+    return [
+      {
+        source: "/api/:path",
+        destination: `${config.apiUrl}/api/:path}`,
+      },
+    ];
   },
 };
 

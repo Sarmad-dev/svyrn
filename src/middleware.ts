@@ -1,7 +1,6 @@
 // middleware.ts
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { getToken } from "./lib/utils";
 
 const protectedRoutes = [
   "/home",
@@ -15,10 +14,16 @@ const protectedRoutes = [
   "/user",
   "/chat",
 ];
+
 const authRoutes = ["/sign-in", "/sign-up", "/forgot-password"];
 
 export async function middleware(request: NextRequest) {
-  // const token = await getToken({ headers: request.headers });
+  const token = request.cookies.get("token")?.value;
+  console.log("Middlware Token: ", token);
+  const pathname = request.nextUrl.pathname;
+
+  // Redirect unauthenticated user from protected pages
+  // const token = await auth.api.getSession({ headers: request.headers });
   // const pathname = request.nextUrl.pathname;
 
   // // Redirect unauthenticated user from protected pages

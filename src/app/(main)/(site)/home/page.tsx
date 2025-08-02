@@ -11,19 +11,20 @@ import { useQueries } from "@tanstack/react-query";
 import React from "react";
 
 const Home = () => {
-  const { data: session, isPending } = authClient.useSession();
+  const { data: session, isPending, error } = authClient.useSession();
+  const token = session?.session.token;
 
   const results = useQueries({
     queries: [
       {
         queryKey: ["get-posts"],
-        queryFn: async () => await getPosts(session?.session.token as string),
-        enabled: !!session?.session.token,
+        queryFn: async () => await getPosts(token as string),
+        enabled: !!token,
       },
       {
         queryKey: ["get-me"],
-        queryFn: async () => await getMe(session?.session.token as string),
-        enabled: !!session?.session.token,
+        queryFn: async () => await getMe(token as string),
+        enabled: !!token,
       },
     ],
   });
@@ -37,22 +38,25 @@ const Home = () => {
     ));
   }
 
-  console.log("Token: ", session?.session.token);
+  console.log("Token: ", token);
   console.log("User: ", JSON.stringify(user, null, 2));
   console.log("Posts: ", JSON.stringify(posts, null, 2));
 
   console.log("POSTS: ", JSON.stringify(posts, null, 2));
 
-  if (!session) {
-    return <div>No Session found</div>;
+  if (error) {
+    return <div>Error: {JSON.stringify(error, null, 2)}</div>;
+  }
+
+  if (!token) {
+    return <div>No Session</div>;
   }
 
   return (
     <div>
       <HomeProfileHeader user={user as User} />
       <StoryPreview user={user as User} />
-      {posts &&
-        posts.length > 0 &&
+      {posts && posts.length > 0 ? (
         posts.map((post) => (
           <PostCard
             {...post}
@@ -67,7 +71,12 @@ const Home = () => {
             reactions={post.reactions}
             currentUser={user as User}
           />
-        ))}
+        ))
+      ) : (
+        <div className="flex items-center justify-center">
+          <p className="text-lg font-semibold">No Posts yet</p>
+        </div>
+      )}
     </div>
   );
 };
