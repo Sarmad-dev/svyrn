@@ -37,6 +37,12 @@ const Home = () => {
     ));
   }
 
+  console.log("Token: ", session?.session.token);
+  console.log("User: ", JSON.stringify(user, null, 2));
+  console.log("Posts: ", JSON.stringify(posts, null, 2));
+
+  console.log("POSTS: ", JSON.stringify(posts, null, 2));
+
   return (
     <div>
       <HomeProfileHeader user={user as User} />
