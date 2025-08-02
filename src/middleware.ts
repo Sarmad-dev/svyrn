@@ -18,22 +18,22 @@ const protectedRoutes = [
 const authRoutes = ["/sign-in", "/sign-up", "/forgot-password"];
 
 export async function middleware(request: NextRequest) {
-  const { data } = await authClient.getSession(
-    {},
-    { headers: request.headers }
-  );
-  const token = data?.session.token;
-  const pathname = request.nextUrl.pathname;
+  // const { data } = await authClient.getSession(
+  //   {},
+  //   { headers: request.headers }
+  // );
+  // const token = data?.session.token;
+  // const pathname = request.nextUrl.pathname;
 
-  // Redirect unauthenticated user from protected pages
-  if (protectedRoutes.some((r) => pathname.startsWith(r)) && !token) {
-    return NextResponse.redirect(new URL("/sign-in", request.url));
-  }
+  // // Redirect unauthenticated user from protected pages
+  // if (protectedRoutes.some((r) => pathname.startsWith(r)) && !token) {
+  //   return NextResponse.redirect(new URL("/sign-in", request.url));
+  // }
 
-  // Redirect logged-in user away from auth pages
-  if (authRoutes.includes(pathname) && token) {
-    return NextResponse.redirect(new URL("/home", request.url));
-  }
+  // // Redirect logged-in user away from auth pages
+  // if (authRoutes.includes(pathname) && token) {
+  //   return NextResponse.redirect(new URL("/home", request.url));
+  // }
 
   return NextResponse.next();
 }
