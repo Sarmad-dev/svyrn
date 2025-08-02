@@ -43,6 +43,10 @@ const Home = () => {
 
   console.log("POSTS: ", JSON.stringify(posts, null, 2));
 
+  if (!session) {
+    return <div>No Session found</div>;
+  }
+
   return (
     <div>
       <HomeProfileHeader user={user as User} />
