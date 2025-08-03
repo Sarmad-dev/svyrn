@@ -68,7 +68,7 @@ export const PostMediaDialog = ({
         <Dialog.Description className="sr-only">
           View and interact with media content.
         </Dialog.Description>
-        <Dialog.Content className="fixed inset-0 z-50 flex items-center justify-center">
+        <Dialog.Content className="fixed inset-0 z-50 flex items-center max-md:flex-col justify-center">
           <div className="bg-white rounded-md shadow-lg relative w-[95vw] h-[90vh] flex overflow-hidden">
             {/* Close Button */}
             <Dialog.Close className="absolute top-4 right-4 z-50 text-gray-700 hover:text-red-500">

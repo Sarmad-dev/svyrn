@@ -140,8 +140,8 @@ export const StoryViewer = ({ stories, onClose }: Props) => {
 
       {/* Media */}
       {currentStory.type === "image" ? (
-        <div className="h-[80vh] w-[calc(100vw-100px)] relative">
-          <Image src={currentStory.url} alt="story" fill objectFit="contain" />
+        <div className="h-[85vh] max-md:w-[calc(100vw-50px)] w-[500px] relative">
+          <Image src={currentStory.url} alt="story" fill objectFit="cover" />
         </div>
       ) : (
         <video
@@ -153,7 +153,7 @@ export const StoryViewer = ({ stories, onClose }: Props) => {
           playsInline
           onLoadedMetadata={handleVideoMetadata}
           onEnded={handleNext}
-          className="max-h-full max-w-full object-contain"
+          className="max-h-full h-[85vh] max-w-full w-[500px] max-md:w-[calc(100vh-50px)] object-cover"
         />
       )}
 
