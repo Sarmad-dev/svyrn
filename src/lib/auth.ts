@@ -40,6 +40,14 @@ export const auth = betterAuth({
             },
           };
         },
+        after: async (session, context) => {
+          context?.setCookie("token", session.token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "lax",
+            path: "/",
+          });
+        },
       },
     },
   },

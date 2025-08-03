@@ -19,7 +19,7 @@ const authRoutes = ["/sign-in", "/sign-up", "/forgot-password"];
 
 export async function middleware(request: NextRequest) {
   // Redirect unauthenticated user from protected pages
-  const token = request.cookies.get("better-auth.session_token")?.value;
+  const token = request.cookies.get("token")?.value;
   const pathname = request.nextUrl.pathname;
 
   // Redirect unauthenticated user from protected pages
