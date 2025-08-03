@@ -32,7 +32,7 @@ export const ContactItem: React.FC<ContactItemProps> = ({
           <span className="text-xs text-gray-500">{contact.timestamp}</span>
         </div>
         <p className="text-sm text-gray-600 truncate">
-          {contact.lastMessage.content.text}
+          {contact.lastMessage?.content?.text}
         </p>
       </div>
     </button>
