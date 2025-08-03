@@ -82,13 +82,23 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
       {/* Cover Photo */}
       <div className="relative h-48">
         <div className="h-full w-full relative">
-          <Image src={coverImage} alt="Cover" fill objectFit="cover" />
+          <Image
+            src={coverImage || "/images/cover.jpeg"}
+            alt="Cover"
+            fill
+            objectFit="cover"
+          />
         </div>
 
         {/* Profile Picture */}
         <div className="absolute left-6 bottom-0 transform translate-y-1/2">
           <div className="w-32 h-32 relative rounded-full border-4 border-white overflow-hidden">
-            <Image src={profileImage} alt={name} fill objectFit="cover" />
+            <Image
+              src={profileImage || "/images/user.png"}
+              alt={name}
+              fill
+              objectFit="cover"
+            />
           </div>
         </div>
       </div>
@@ -132,7 +142,12 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
 
           <div className="text-center">
             <div className="h-24 relative rounded-lg overflow-hidden mb-2">
-              <Image src={photosImage} alt="Photos" fill objectFit="cover" />
+              <Image
+                src={photosImage || "/images/user.png"}
+                alt="Photos"
+                fill
+                objectFit="cover"
+              />
             </div>
             <Link href={`/profile`}>
               <p className="text-sm font-medium text-gray-700">

@@ -65,7 +65,7 @@ export const StoryUploadDialog = ({ user }: { user: User }) => {
       <Dialog.Trigger asChild>
         <div className="min-w-[150px] h-[200px] rounded-xl bg-white overflow-hidden relative flex-shrink-0 shadow-md">
           <Image
-            src={user.profilePicture}
+            src={user.profilePicture || "/images/user.png"}
             alt="Create story"
             fill
             objectFit="cover"
