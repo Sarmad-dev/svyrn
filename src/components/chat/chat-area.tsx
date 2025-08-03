@@ -206,7 +206,7 @@ const Chatarea = () => {
               message={{
                 id: message._id,
                 text: message.content?.text,
-                url: message.content?.media[0]?.url,
+                url: message.content?.media?.[0].url,
                 timestamp: message.createdAt,
                 isOwn: message.sender._id === data?.user.id,
                 AvatarImage: message.sender.profilePicture,
