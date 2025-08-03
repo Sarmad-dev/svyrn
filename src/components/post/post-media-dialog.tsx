@@ -76,7 +76,7 @@ export const PostMediaDialog = ({
             </Dialog.Close>
 
             {/* Left: Media Display */}
-            <div className="w-[60%] h-full flex justify-center items-center bg-black">
+            <div className="w-[60%] max-md:w-full h-full flex justify-center items-center bg-black">
               {media.length > 1 ? (
                 <div ref={sliderRef} className="keen-slider w-full h-full">
                   {media.map((item, idx) => (
@@ -88,7 +88,7 @@ export const PostMediaDialog = ({
                         alt={item.caption}
                         width={800}
                         height={800}
-                        className="object-contain max-h-[85vh] w-auto"
+                        className="object-contain max-md:object-cover max-h-[85vh] w-auto"
                       />
                     </div>
                   ))}
@@ -105,7 +105,7 @@ export const PostMediaDialog = ({
             </div>
 
             {/* Right: Sidebar (White Background) */}
-            <div className="w-[40%] h-full bg-white flex flex-col justify-between border-l border-gray-200">
+            <div className="w-[40%] max-md:w-full h-full bg-white flex flex-col justify-between border-l border-gray-200">
               {/* Header */}
               <div className="flex items-center gap-3 p-4 border-b border-gray-100">
                 <Avatar>
