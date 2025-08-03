@@ -1,7 +1,7 @@
 import { betterAuth } from "better-auth";
-import mongoose from "mongoose";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
 import { SignJWT } from "jose";
+import { connectDB } from "./db";
 
 const secret = new TextEncoder().encode(process.env.NEXT_PUBLIC_JWT_SECRET);
 
@@ -13,27 +13,10 @@ async function createCustomToken(sessionId: string, userId: string) {
     .sign(secret);
 }
 
-const connectDB = async () => {
-  if (!process.env.NEXT_PUBLIC_MONGODB_URI) {
-    throw new Error("MONGODB_URI is not defined");
-  }
-  await mongoose.connect(process.env.NEXT_PUBLIC_MONGODB_URI, {
-    dbName: "social-network",
-  });
-};
-
-await connectDB();
-
-if (!mongoose.connection.db) {
-  throw new Error(
-    "MongoDB not connected yet. Call this after mongoose.connect()"
-  );
-}
-
-console.log("FRONTEND URL: ", process.env.FRONTEND_URL);
+const mongooseConnection = await connectDB();
 
 export const auth = betterAuth({
-  database: mongodbAdapter(mongoose.connection.db),
+  database: mongodbAdapter(mongooseConnection!),
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: false,
