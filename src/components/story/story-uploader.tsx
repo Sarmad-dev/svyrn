@@ -137,7 +137,7 @@ export const StoryUploadDialog = ({ user }: { user: User }) => {
                 onClick={handleRemove}>
                 <X className="w-4 h-4 text-gray-700" />
               </button>
-              {file?.type.startsWith("image/") ? (
+              {file?.type.startsWith?.("image/") ? (
                 <div className="w-full h-64 relative">
                   <Image
                     src={previewUrl}

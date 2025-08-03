@@ -23,7 +23,7 @@ export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
   // Redirect unauthenticated user from protected pages
-  if (protectedRoutes.some((r) => pathname.startsWith(r)) && !token) {
+  if (protectedRoutes.some((r) => pathname.startsWith?.(r)) && !token) {
     return NextResponse.redirect(new URL("/sign-in", request.url));
   }
 

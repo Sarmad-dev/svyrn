@@ -31,7 +31,7 @@ const MediaUploader: React.FC<MediaUploaderProps> = ({
 
       if (!file) return;
 
-      const fileType: MediaType = file.type.startsWith("video")
+      const fileType: MediaType = file.type.startsWith?.("video")
         ? "video"
         : "image";
 
