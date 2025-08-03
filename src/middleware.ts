@@ -1,6 +1,7 @@
 // middleware.ts
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { auth } from "./lib/auth";
 
 const protectedRoutes = [
   "/home",
@@ -19,7 +20,8 @@ const authRoutes = ["/sign-in", "/sign-up", "/forgot-password"];
 
 export async function middleware(request: NextRequest) {
   // Redirect unauthenticated user from protected pages
-  const token = request.cookies.get("token")?.value;
+  const session = await auth.api.getSession({ headers: request.headers });
+  const token = session?.session.token;
   const pathname = request.nextUrl.pathname;
 
   // Redirect unauthenticated user from protected pages
