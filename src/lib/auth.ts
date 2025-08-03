@@ -1,7 +1,7 @@
 import { betterAuth } from "better-auth";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
 import { SignJWT } from "jose";
-import { connectDB } from "./db";
+import clientPromise from "./db";
 
 const secret = new TextEncoder().encode(process.env.NEXT_PUBLIC_JWT_SECRET);
 
@@ -13,10 +13,10 @@ async function createCustomToken(sessionId: string, userId: string) {
     .sign(secret);
 }
 
-const mongooseConnection = await connectDB();
+const client = await clientPromise;
 
 export const auth = betterAuth({
-  database: mongodbAdapter(mongooseConnection!),
+  database: mongodbAdapter(client.db("social-network")),
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: false,
