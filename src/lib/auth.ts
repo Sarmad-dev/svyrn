@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { betterAuth } from "better-auth";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
 import { SignJWT } from "jose";
@@ -40,12 +41,23 @@ export const auth = betterAuth({
             },
           };
         },
-        after: async (session, context) => {
+        async after(session, context) {
           context?.setCookie("token", session.token, {
             httpOnly: true,
             secure: true,
             sameSite: "lax",
             path: "/",
+          });
+        },
+      },
+      delete: {
+        after: async (_session: any, context: any) => {
+          context?.setCookie("token", "", {
+            httpOnly: true,
+            secure: true,
+            sameSite: "lax",
+            path: "/",
+            maxAge: 0, // ✅ Instructs browser to delete cookie
           });
         },
       },
