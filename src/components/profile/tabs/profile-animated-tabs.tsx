@@ -41,7 +41,7 @@ export function ProfileAnimatedTabs({ user }: { user: User }) {
       onValueChange={setActiveTab}
       className="w-full md:-mt-10 mt-5">
       <div className="relative">
-        <TabsList className="relative flex w-[500px] mx-auto justify-between gap-4 border-b border-gray-300">
+        <TabsList className="relative flex w-[500px] max-md:w-screen mx-auto justify-between gap-4 border-b border-gray-300">
           {tabItems.map((tab, idx) => (
             <div key={tab.value}>
               <TabsTrigger

@@ -42,7 +42,7 @@ const Ads = () => {
           <Loader2 className="animate-spin" />
         </div>
       ) : ads && ads.length > 0 ? (
-        <div className="grid grid-cols-2 gap-5">
+        <div className="grid grid-cols-2 max-md:grid-cols-1 gap-5">
           {ads.map((ad: any) => (
             <RecentAdCard
               author={{
