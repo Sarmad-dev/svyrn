@@ -3,11 +3,11 @@ import { MongoClient } from "mongodb";
 
 const uri = process.env.MONGODB_URI as string; // e.g., mongodb+srv://...
 
-// if (!uri) {
-//   throw new Error(
-//     "Please define the MONGODB_URI environment variable inside .env.local"
-//   );
-// }
+if (!uri) {
+  throw new Error(
+    "Please define the MONGODB_URI environment variable inside .env.local"
+  );
+}
 
 let client: MongoClient;
 let clientPromise: Promise<MongoClient>;
