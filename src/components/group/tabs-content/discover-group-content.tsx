@@ -23,8 +23,10 @@ const DiscoverGroupContent = () => {
     <div className="space-y-2 max-md:px-3">
       <TabContentHeader>
         <div className="space-y-0.5">
-          <h2 className="font-medium text-lg">Suggested for you</h2>
-          <p className="text-muted-foreground text-sm">
+          <h2 className="font-medium text-lg max-md:text-[15px]">
+            Suggested for you
+          </h2>
+          <p className="text-muted-foreground text-sm max-md:text-xs">
             Groups you might be interested in
           </p>
         </div>

@@ -17,7 +17,9 @@ const YourGroupsContent = () => {
     <div className="space-y-2 max-md:px-3">
       <TabContentHeader>
         <div className="space-y-0.5">
-          <h2 className="font-medium text-lg">All groups you&apos;ve joined</h2>
+          <h2 className="font-medium text-lg max-md:text-sm">
+            All groups you&apos;ve joined
+          </h2>
         </div>
       </TabContentHeader>
       <div className="grid grid-cols-3 gap-2 max-md:grid-cols-2">

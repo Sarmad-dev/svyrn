@@ -39,7 +39,9 @@ const YourFeedContent = () => {
   return (
     <div className="space-y-2">
       <TabContentHeader>
-        <h2 className="font-medium text-lg">Recent Activity</h2>
+        <h2 className="font-medium text-lg max-md:text-[15px]">
+          Recent Activity
+        </h2>
       </TabContentHeader>
       <div className="mt-2">
         {posts &&
