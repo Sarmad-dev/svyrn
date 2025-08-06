@@ -3,9 +3,9 @@ import { Bell, Home, MessageCircle } from "lucide-react";
 import Image from "next/image";
 import React from "react";
 import Link from "next/link";
-import SearchDropdown from "./search-dropdown";
 import ProfileDropdown from "./profile-dropdown";
 import MobileSheet from "../sidebar/mobile-sheet";
+import GlobalSearchDropdown from "@/components/global-search";
 
 const Header = () => {
   return (
@@ -24,7 +24,7 @@ const Header = () => {
 
         {/* Center Section: Search Bar (Hidden on Mobile) */}
         <div className="hidden md:block">
-          <SearchDropdown />
+          <GlobalSearchDropdown />
         </div>
 
         {/* Right Section: Icons + DropdownMenu (Large Screens Only) */}

@@ -8,6 +8,7 @@ import {
   updateProfilePicture,
 } from "@/lib/actions/group.action";
 import { authClient } from "@/lib/auth-client";
+import { cn } from "@/lib/utils";
 
 interface Group {
   coverPhoto?: string;
@@ -103,7 +104,7 @@ export default function GroupHeader({ group, groupId, pageId, userId }: Props) {
           src={coverPhoto || "/images/cover.jpeg"}
           alt="cover photo"
           fill
-          className="object-cover transition-all duration-300 group-hover/cover:blur-sm"
+          className={cn(isEditable && "group-hover/cover:blur-sm")}
         />
 
         {isEditable && (
@@ -128,12 +129,16 @@ export default function GroupHeader({ group, groupId, pageId, userId }: Props) {
       </div>
 
       {/* Profile Picture */}
-      <div className="absolute left-6 bottom-[-55px] w-[110px] h-[110px] rounded-full overflow-hidden border-4 border-white group/avatar">
+      <div className="absolute left-6 bottom-[-55px] w-[150px] h-[150px] rounded-full overflow-hidden border-4 border-white group/avatar">
         <Image
           src={avatar || "/images/user.png"}
           alt="avatar"
           fill
-          className="object-cover transition-all duration-300 group-hover/avatar:blur-sm rounded-full"
+          className={cn(
+            "rounded-full",
+            isEditable && "group-hover/avatar:blur-sm"
+          )}
+          objectFit="cover"
         />
 
         {isEditable && (

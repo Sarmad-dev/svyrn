@@ -1,5 +1,4 @@
-import MobileSigninForm from "@/components/auth/forms/mobile-signin-form";
-import SigninForm from "@/components/auth/forms/signin-form";
+import ResetPasswordForm from "@/components/auth/forms/reset-password-form";
 import {
   Card,
   CardContent,
@@ -8,8 +7,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import Image from "next/image";
+import React from "react";
 
-const SignIn = () => {
+const ResetPassword = () => {
   return (
     <>
       <Card className="w-[400px] max-md:hidden block">
@@ -18,7 +18,7 @@ const SignIn = () => {
           <CardDescription>Please Sign in here</CardDescription>
         </CardHeader>
         <CardContent>
-          <SigninForm />
+          <ResetPasswordForm />
         </CardContent>
       </Card>
       <div className="md:hidden flex flex-col gap-3 items-center">
@@ -28,10 +28,10 @@ const SignIn = () => {
           height={150}
           alt="logo"
         />
-        <MobileSigninForm />
+        <ResetPasswordForm />
       </div>
     </>
   );
 };
 
-export default SignIn;
+export default ResetPassword;

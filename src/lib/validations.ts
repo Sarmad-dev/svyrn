@@ -11,6 +11,10 @@ export const signupSchema = z.object({
   name: z.string().min(3),
 });
 
+export const forgotPasswordSchema = z.object({
+  email: z.string().email(),
+});
+
 export const createPostSchema = z.object({
   text: z.string().min(3),
   base64: z.string().optional(),

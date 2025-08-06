@@ -2,6 +2,7 @@ import { betterAuth } from "better-auth";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
 import { SignJWT } from "jose";
 import clientPromise from "./db";
+import { sendResetEmail } from "./actions/email";
 
 const secret = new TextEncoder().encode(process.env.NEXT_PUBLIC_JWT_SECRET);
 
@@ -20,6 +21,9 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: false,
+    sendResetPassword: async ({ user, url }) => {
+      await sendResetEmail(user.email, url);
+    },
   },
   user: {
     modelName: "users",

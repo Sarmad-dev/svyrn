@@ -66,3 +66,4 @@ export const getToken = async ({ headers }: { headers: Headers }) => {
 
   return data?.session.token;
 };
+
