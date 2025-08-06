@@ -49,6 +49,11 @@ const MobileForgotPasswordForm = () => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
+        <div className="text-center">
+          <h3 className="text-lg font-medium text-muted-foreground">
+            Enter you email to reset password
+          </h3>
+        </div>
         <FormField
           name="email"
           control={form.control}
@@ -57,7 +62,7 @@ const MobileForgotPasswordForm = () => {
               <FormControl>
                 <Input
                   placeholder="Email"
-                  className="placeholder:text-primary border-[#3737378C] rounded-sm w-[calc(100vw-8rem)] h-[50px]"
+                  className="placeholder:text-primary border-[#3737378C] rounded-sm h-[50px]"
                   {...field}
                 />
               </FormControl>
