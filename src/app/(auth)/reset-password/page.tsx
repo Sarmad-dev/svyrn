@@ -7,30 +7,32 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import Image from "next/image";
-import React from "react";
+import React, { Suspense } from "react";
 
 const ResetPassword = () => {
   return (
-    <>
-      <Card className="w-[400px] max-md:hidden block">
-        <CardHeader className="sr-only">
-          <CardTitle>Sign In</CardTitle>
-          <CardDescription>Please Sign in here</CardDescription>
-        </CardHeader>
-        <CardContent>
+    <Suspense fallback={<div>Loading Reset Password</div>}>
+      <>
+        <Card className="w-[400px] max-md:hidden block">
+          <CardHeader className="sr-only">
+            <CardTitle>Sign In</CardTitle>
+            <CardDescription>Please Sign in here</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ResetPasswordForm />
+          </CardContent>
+        </Card>
+        <div className="md:hidden flex flex-col gap-3 items-center">
+          <Image
+            src={"/icons/logo-gray.png"}
+            width={150}
+            height={150}
+            alt="logo"
+          />
           <ResetPasswordForm />
-        </CardContent>
-      </Card>
-      <div className="md:hidden flex flex-col gap-3 items-center">
-        <Image
-          src={"/icons/logo-gray.png"}
-          width={150}
-          height={150}
-          alt="logo"
-        />
-        <ResetPasswordForm />
-      </div>
-    </>
+        </div>
+      </>
+    </Suspense>
   );
 };
 
