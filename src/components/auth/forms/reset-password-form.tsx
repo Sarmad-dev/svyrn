@@ -58,6 +58,11 @@ const ResetPasswordForm = () => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
+        <div className="text-center">
+          <h3 className="text-lg font-medium text-muted-foreground">
+            Enter new password to reset your password
+          </h3>
+        </div>
         <FormField
           name="newPassword"
           control={form.control}
@@ -66,7 +71,7 @@ const ResetPasswordForm = () => {
               <FormControl>
                 <Input
                   placeholder="New Password"
-                  className="placeholder:text-primary border-[#3737378C]"
+                  className="placeholder:text-primary border-[#3737378C] max-md:w-[calc(100vw-8rem)]"
                   {...field}
                 />
               </FormControl>

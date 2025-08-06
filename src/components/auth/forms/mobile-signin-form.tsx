@@ -83,7 +83,7 @@ const MobileSigninForm = () => {
               <FormControl>
                 <Input
                   placeholder="Password"
-                  className="placeholder:text-primary border-[#3737378C] rounded-sm h-[50px]"
+                  className="placeholder:text-primary border-[#3737378C] rounded-sm h-[50px] w-[calc(100vw-8rem)]"
                   {...field}
                 />
               </FormControl>
