@@ -7,7 +7,7 @@ const SiteLayout = ({ children }: { children: React.ReactNode }) => {
     <main className="w-full min-h-screen">
       <Header />
       <div className="w-full sm:min-h-[100vh-64px] min-h-[100vh-56px]">
-        <div className="container mt-5 flex mx-auto">
+        <div className="container mt-5 max-md:mt-0 flex mx-auto">
           <div className="max-sm:hidden">
             <LeftSideBar />
           </div>

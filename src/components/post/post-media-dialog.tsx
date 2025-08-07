@@ -22,18 +22,6 @@ interface MediaItem {
 interface PostMediaDialogProps {
   media: MediaItem[];
   comments: Comment[];
-  setComments: React.Dispatch<
-    React.SetStateAction<
-      {
-        content?: string;
-        author: {
-          name: string;
-          profilePicture: string;
-        };
-        createdAt: Date | string;
-      }[]
-    >
-  >;
   reactions: Reaction[];
   postId: string;
   currentUser: User;
@@ -49,7 +37,6 @@ export const PostMediaDialog = ({
   media,
   trigger,
   comments,
-  setComments,
   reactions,
   postId,
   currentUser,
@@ -183,22 +170,7 @@ export const PostMediaDialog = ({
                       alt="User"
                     />
                   </Avatar>
-                  <CommentInput
-                    postId={postId}
-                    onSuccess={(newComment) => {
-                      setComments((prev) => [
-                        ...prev,
-                        {
-                          content: newComment.content,
-                          author: {
-                            name: newComment.author.name,
-                            profilePicture: newComment.author.profilePicture,
-                          },
-                          createdAt: newComment.createdAt as Date,
-                        },
-                      ]);
-                    }}
-                  />
+                  <CommentInput postId={postId} />
                 </div>
               </div>
             </div>

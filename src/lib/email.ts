@@ -7,8 +7,8 @@ const mailersend = new MailerSend({
 });
 
 const sender = new Sender(
-  "MS_xnr0V5@test-ywj2lpnd3pmg7oqz.mlsender.net",
-  "Svyrn"
+  process.env.MAILERSEND_DOMAIN!,
+  process.env.MAILERSEND_NAME!
 ); // Must match a verified sender
 
 export async function sendEmail({

@@ -13,6 +13,9 @@ import { AnimatePresence, motion } from "framer-motion";
 import CommentItem from "./post/comment/comment-item";
 import { PostMediaDialog } from "./post/post-media-dialog";
 import Link from "next/link";
+import { authClient } from "@/lib/auth-client";
+import { useQuery } from "@tanstack/react-query";
+import { getComments } from "@/lib/actions/post.action";
 
 interface PostCardProps {
   _id: string;
@@ -62,12 +65,21 @@ export const PostCard = ({
   createdAt,
   content,
   reactions,
-  comments,
   group,
   currentUser,
 }: PostCardProps) => {
   const [showComments, setShowComments] = useState(false);
-  const [commentToShow, setCommentToShow] = useState(comments || []);
+
+  const { data: session } = authClient.useSession();
+  const { data: commentToShow } = useQuery({
+    queryKey: ["get-post-comments", _id],
+    queryFn: async () =>
+      await getComments({
+        postId: _id as string,
+        token: session?.session.token as string,
+      }),
+    enabled: !!session?.session.token,
+  });
 
   return (
     <div className="bg-white rounded-lg border border-gray-200 overflow-hidden mb-6 w-full">
@@ -126,8 +138,7 @@ export const PostCard = ({
         content.media[0].type == "image" && (
           <PostMediaDialog
             media={content.media}
-            comments={commentToShow as Comment[]}
-            setComments={setCommentToShow}
+            comments={commentToShow ?? ([] as Comment[])}
             reactions={reactions}
             postId={_id}
             currentUser={currentUser as User}
@@ -137,7 +148,7 @@ export const PostCard = ({
               isVerified: authorIsVerified,
             }}
             trigger={
-              <div className="relative w-full h-96 cursor-pointer">
+              <div className="relative w-full h-[420px] max-md:h-96 cursor-pointer">
                 <Image
                   src={content.media[0].url}
                   alt="Post content"
@@ -215,7 +226,7 @@ export const PostCard = ({
               className="overflow-hidden space-y-3">
               {commentToShow &&
                 commentToShow.length > 0 &&
-                commentToShow.map((comment, index) => (
+                commentToShow.map((comment: Comment, index: number) => (
                   <CommentItem
                     key={index}
                     comment={comment as Comment}
@@ -234,22 +245,7 @@ export const PostCard = ({
               alt="Your avatar"
             />
           </Avatar>
-          <CommentInput
-            postId={_id}
-            onSuccess={(newComment) =>
-              setCommentToShow((prev) => [
-                ...prev,
-                {
-                  content: newComment.content,
-                  author: {
-                    name: newComment.author.name,
-                    profilePicture: newComment.author.profilePicture,
-                  },
-                  createdAt: newComment.createdAt as Date,
-                },
-              ])
-            }
-          />
+          <CommentInput postId={_id} />
         </div>
       </div>
     </div>

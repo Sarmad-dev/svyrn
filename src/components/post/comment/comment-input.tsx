@@ -1,43 +1,31 @@
+import { creatComment } from "@/lib/actions/post.action";
 import { authClient } from "@/lib/auth-client";
-import { config } from "@/lib/config";
-import { Comment } from "@/types/global";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
-import { toast } from "sonner";
 
-const CommentInput = ({
-  postId,
-  onSuccess,
-}: {
-  postId: string;
-  onSuccess?: (newComment: Comment) => void;
-}) => {
+const CommentInput = ({ postId }: { postId: string }) => {
   const { data, isPending } = authClient.useSession();
   const [commentValue, setCommentValue] = useState("");
 
-  const handleAddComment = async () => {
-    try {
-      const res = await fetch(`${config.apiUrl}/api/posts/${postId}/comments`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${data?.session.token}`,
-        },
-        body: JSON.stringify({
-          content: commentValue,
-        }),
+  const queryClient = useQueryClient();
+
+  const { mutateAsync, isPending: isCommentPending } = useMutation({
+    mutationKey: ["add-comment"],
+    mutationFn: async () =>
+      await creatComment({
+        content: commentValue,
+        postId,
+        token: data?.session.token as string,
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["get-post-comments", postId],
       });
+    },
+  });
 
-      const response = await res.json();
-      if (response.status === "success") {
-        onSuccess?.(response.data.comment);
-        setCommentValue("");
-      }
-
-      toast.success("Comment added");
-    } catch (error) {
-      console.log(error);
-      toast.error("Something went wrong");
-    }
+  const handleAddComment = async () => {
+    await mutateAsync();
   };
 
   return (
@@ -53,7 +41,7 @@ const CommentInput = ({
             handleAddComment();
           }
         }}
-        disabled={isPending}
+        disabled={isPending || isCommentPending}
       />
       <button className="text-gray-400 hover:text-gray-600">
         <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">

@@ -53,7 +53,7 @@ const Home = () => {
   }
 
   return (
-    <div>
+    <>
       <HomeProfileHeader user={user as User} />
       <StoryPreview user={user as User} />
       {posts && posts.length > 0 ? (
@@ -77,7 +77,7 @@ const Home = () => {
           <p className="text-lg font-semibold">No Posts yet</p>
         </div>
       )}
-    </div>
+    </>
   );
 };
 

@@ -58,7 +58,7 @@ const HomeProfileHeader = ({ user }: { user: User }) => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 pb-8">
+    <div className="max-w-4xl mx-auto pb-8">
       <ProfileSection {...profileData} photosImage={profileData.profileImage} />
     </div>
   );
@@ -78,9 +78,9 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
   videosImage,
 }) => {
   return (
-    <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-200">
+    <div className="bg-white rounded-2xl max-md:rounded-none overflow-hidden shadow-sm border border-gray-200">
       {/* Cover Photo */}
-      <div className="relative h-48">
+      <div className="relative h-64 max-md:h-48">
         <div className="h-full w-full relative">
           <Image
             src={coverImage || "/images/cover.jpeg"}
