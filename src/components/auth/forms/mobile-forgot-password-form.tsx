@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
+import { config } from "@/lib/config";
 import { forgotPasswordSchema } from "@/lib/validations";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
@@ -31,7 +32,7 @@ const MobileForgotPasswordForm = () => {
     await authClient.requestPasswordReset(
       {
         email: data.email,
-        redirectTo: "http://localhost/reset-password",
+        redirectTo: `${config.url}/reset-password`,
       },
       {
         onSuccess: () => {
