@@ -150,12 +150,16 @@ export const PostCard = ({
               isVerified: authorIsVerified,
             }}
             trigger={
-              <div className="relative w-full h-[420px] max-md:h-96 cursor-pointer">
+              <div className="relative w-full aspect-[4/5] md:aspect-[16/9] bg-muted cursor-pointer">
                 <Image
                   src={content.media[0].url}
                   alt="Post content"
                   fill
-                  objectFit="contain"
+                  priority={false}
+                  loading="lazy"
+                  placeholder="blur"
+                  blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nMTAwJScgaGVpZ2h0PScxMDAlJyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnPjxyZWN0IHdpZHRoPScxMDAlJyBoZWlnaHQ9JzEwMCUnIGZpbGw9JyNlZWUnLz48L3N2Zz4="
+                  className="object-contain md:object-cover"
                 />
               </div>
             }
@@ -219,28 +223,30 @@ export const PostCard = ({
         </div>
 
         {/* Comments */}
-        <AnimatePresence initial={false}>
-          {showComments && (
-            <motion.div
-              key="comments"
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.2 }}
-              className="overflow-hidden space-y-3"
-            >
-              {commentToShow &&
-                commentToShow.length > 0 &&
-                commentToShow.map((comment: Comment, index: number) => (
-                  <CommentItem
-                    key={index}
-                    comment={comment as Comment}
-                    postId={_id}
-                  />
-                ))}
-            </motion.div>
-          )}
-        </AnimatePresence>
+        <div className="overflow-hidden">
+          <AnimatePresence initial={false}>
+            {showComments && (
+              <motion.div
+                key="comments"
+                initial={{ opacity: 0, y: -8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.18 }}
+                className="space-y-3 will-change-transform"
+              >
+                {commentToShow &&
+                  commentToShow.length > 0 &&
+                  commentToShow.map((comment: Comment, index: number) => (
+                    <CommentItem
+                      key={index}
+                      comment={comment as Comment}
+                      postId={_id}
+                    />
+                  ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
 
         {/* Add Comment */}
         <div className="flex items-center gap-3 mt-4 pt-3 border-t border-gray-100">

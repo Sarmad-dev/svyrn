@@ -5,6 +5,7 @@ import { Plus } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
+import AdsManagerTabs from "@/components/ads/ads-manager-tabs";
 
 const AdManager = () => {
   const [showCreateAdDailog, setShowCreateAdDialog] = useState(false);
@@ -16,7 +17,8 @@ const AdManager = () => {
           <Link href={`/ads/my-ads`}>
             <Button
               variant={"ghost"}
-              className="bg-blue-400 cursor-pointer hover:bg-blue-300 text-white hover:text-white">
+              className="bg-blue-400 cursor-pointer hover:bg-blue-300 text-white hover:text-white"
+            >
               <Image
                 src={"/icons/ad-icon-white.svg"}
                 alt="ad icon"
@@ -29,12 +31,15 @@ const AdManager = () => {
           </Link>
           <Button
             className="bg-blue-400 hover:bg-blue-300 text-white hover:text-white cursor-pointer"
-            onClick={() => setShowCreateAdDialog(true)}>
+            onClick={() => setShowCreateAdDialog(true)}
+          >
             <Plus />
             Create Ads
           </Button>
         </div>
       </div>
+
+      <AdsManagerTabs />
       <CreateAd
         isOpen={showCreateAdDailog}
         onClose={() => setShowCreateAdDialog(false)}

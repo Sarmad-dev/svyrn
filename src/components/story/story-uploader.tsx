@@ -70,6 +70,7 @@ export const StoryUploadDialog = ({ user }: { user: User }) => {
             fill
             objectFit="cover"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            loading="lazy"
           />
           <div className="absolute inset-0 bg-black/30"></div>
           <div className="absolute inset-0 flex flex-col items-center justify-center text-white px-2">

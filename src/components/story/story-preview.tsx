@@ -31,7 +31,7 @@ export const StoryPreview = ({ user }: { user: User }) => {
   });
 
   return (
-    <div className="flex overflow-x-auto no-scrollbar gap-3 px-4 py-4">
+    <div className="flex overflow-x-auto no-scrollbar gap-3 px-4 py-4 snap-x snap-mandatory">
       <StoryUploadDialog user={user} />
       {stories &&
         stories.length > 0 &&
@@ -48,7 +48,7 @@ export const StoryPreview = ({ user }: { user: User }) => {
           return (
             <div
               key={story.author._id}
-              className="cursor-pointer min-w-[150px] h-[200px] rounded-xl overflow-hidden relative flex-shrink-0 shadow-md"
+              className="cursor-pointer min-w-[120px] md:min-w-[150px] h-[180px] md:h-[200px] rounded-xl overflow-hidden relative flex-shrink-0 shadow-md snap-start"
               onClick={() => {
                 setSelectedStory(storydata);
               }}
@@ -60,8 +60,12 @@ export const StoryPreview = ({ user }: { user: User }) => {
                 }
                 alt={story.stories[0].content.caption as string}
                 fill
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                objectFit="cover"
+                priority={false}
+                loading="lazy"
+                placeholder="blur"
+                blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nMTAwJScgaGVpZ2h0PScxMDAlJyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnPjxyZWN0IHdpZHRoPScxMDAlJyBoZWlnaHQ9JzEwMCUnIGZpbGw9JyNlZWUnLz48L3N2Zz4="
+                sizes="(max-width: 768px) 40vw, 200px"
+                className="object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
               <Image
@@ -70,8 +74,9 @@ export const StoryPreview = ({ user }: { user: User }) => {
                 className="rounded-full border-2 border-white absolute top-2 left-2"
                 width={32}
                 height={32}
+                loading="lazy"
               />
-              <p className="absolute bottom-2 left-2 text-white text-sm font-medium">
+              <p className="absolute bottom-2 left-2 text-white text-xs md:text-sm font-medium line-clamp-1 pr-6">
                 {story.stories[0].content.caption}
               </p>
             </div>
@@ -79,7 +84,7 @@ export const StoryPreview = ({ user }: { user: User }) => {
         })}
 
       {/* Navigation Arrow */}
-      <button className="min-w-[50px] h-[200px] rounded-xl bg-white flex items-center justify-center shadow-md flex-shrink-0">
+      <button className="min-w-[44px] md:min-w-[50px] h-[180px] md:h-[200px] rounded-xl bg-white flex items-center justify-center shadow-md flex-shrink-0">
         <ChevronRight className="text-blue-500 w-6 h-6" />
       </button>
 
