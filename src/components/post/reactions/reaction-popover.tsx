@@ -92,7 +92,6 @@ const ReactionPopover = ({
           ) : (
             <>
               <ThumbsUp />
-              <p>Reaction</p>
             </>
           )}
         </span>
