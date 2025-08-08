@@ -11,7 +11,7 @@ import { useQueries } from "@tanstack/react-query";
 import React from "react";
 
 const Home = () => {
-  const { data: session, isPending, error } = authClient.useSession();
+  const { data: session, isPending } = authClient.useSession();
   const token = session?.session.token;
 
   const results = useQueries({
@@ -36,20 +36,6 @@ const Home = () => {
     return Array.from({ length: 3 }).map((_, i) => (
       <PostCardSkeleton key={i} />
     ));
-  }
-
-  console.log("Token: ", token);
-  console.log("User: ", JSON.stringify(user, null, 2));
-  console.log("Posts: ", JSON.stringify(posts, null, 2));
-
-  console.log("POSTS: ", JSON.stringify(posts, null, 2));
-
-  if (error) {
-    return <div>Error: {JSON.stringify(error, null, 2)}</div>;
-  }
-
-  if (!token) {
-    return <div>No Session</div>;
   }
 
   return (

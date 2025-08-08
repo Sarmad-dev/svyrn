@@ -104,7 +104,8 @@ export const PostCard = ({
                   <svg
                     className="w-3 h-3"
                     fill="currentColor"
-                    viewBox="0 0 24 24">
+                    viewBox="0 0 24 24"
+                  >
                     <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
                   </svg>
                 </Badge>
@@ -118,7 +119,8 @@ export const PostCard = ({
                 in{" "}
                 <Link
                   href={`/groups/${group?._id as string}`}
-                  className="hover:underline">
+                  className="hover:underline"
+                >
                   {group?.name}
                 </Link>
               </p>
@@ -194,12 +196,14 @@ export const PostCard = ({
             variant="outline"
             size="icon"
             className="border-none cursor-pointer"
-            onClick={() => setShowComments((prev) => !prev)}>
+            onClick={() => setShowComments((prev) => !prev)}
+          >
             <MessageCircle />
           </Button>
           <Button
             variant="outline"
-            className="border-none cursor-pointer hover:text-blue-500">
+            className="border-none cursor-pointer hover:text-blue-500"
+          >
             <Share2 />
           </Button>
           <button className="ml-auto text-gray-600 hover:text-gray-800">
@@ -222,8 +226,9 @@ export const PostCard = ({
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.3 }}
-              className="overflow-hidden space-y-3">
+              transition={{ duration: 0.2 }}
+              className="overflow-hidden space-y-3"
+            >
               {commentToShow &&
                 commentToShow.length > 0 &&
                 commentToShow.map((comment: Comment, index: number) => (

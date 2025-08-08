@@ -92,14 +92,15 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
 
         {/* Profile Picture */}
         <div className="absolute left-6 bottom-0 transform translate-y-1/2">
-          <Image
-            src={profileImage || "/images/user.png"}
-            alt={name}
-            width={128}
-            height={128}
-            className="rounded-full object-cover border-4 border-white"
-            priority
-          />
+          <div className="relative h-32 w-32 rounded-full">
+            <Image
+              src={profileImage || "/images/user.png"}
+              alt={name}
+              fill
+              className="rounded-full object-cover border-4 border-white"
+              priority
+            />
+          </div>
         </div>
       </div>
 
@@ -111,7 +112,8 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
           href={website.startsWith("http") ? website : `https://${website}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-[#4eaae9] hover:underline text-sm font-medium">
+          className="text-[#4eaae9] hover:underline text-sm font-medium"
+        >
           {website}
         </a>
 
@@ -138,7 +140,6 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
                 fill
                 sizes="(max-width: 768px) 100vw, 400px"
                 className="object-cover"
-                loading="lazy"
               />
             </div>
             <Link href={`/marketplace/${id}`}>
@@ -158,7 +159,6 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
                 fill
                 sizes="(max-width: 768px) 100vw, 400px"
                 className="object-cover"
-                loading="lazy"
               />
             </div>
             <Link href={`/profile`}>
@@ -178,7 +178,6 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
                 fill
                 sizes="(max-width: 768px) 100vw, 400px"
                 className="object-cover"
-                loading="lazy"
               />
             </div>
             <Link href={`/profile`}>

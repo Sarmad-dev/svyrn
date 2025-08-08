@@ -51,7 +51,8 @@ export const StoryPreview = ({ user }: { user: User }) => {
               className="cursor-pointer min-w-[150px] h-[200px] rounded-xl overflow-hidden relative flex-shrink-0 shadow-md"
               onClick={() => {
                 setSelectedStory(storydata);
-              }}>
+              }}
+            >
               <Image
                 src={
                   story.stories[0].content.media[0].thumbnail ||
@@ -59,13 +60,14 @@ export const StoryPreview = ({ user }: { user: User }) => {
                 }
                 alt={story.stories[0].content.caption as string}
                 fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 objectFit="cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
               <Image
                 src={story.author.profilePicture as string}
                 alt="avatar"
-                className="w-8 h-8 rounded-full border-2 border-white absolute top-2 left-2"
+                className="rounded-full border-2 border-white absolute top-2 left-2"
                 width={32}
                 height={32}
               />

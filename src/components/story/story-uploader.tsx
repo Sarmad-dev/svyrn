@@ -69,6 +69,7 @@ export const StoryUploadDialog = ({ user }: { user: User }) => {
             alt="Create story"
             fill
             objectFit="cover"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
           <div className="absolute inset-0 bg-black/30"></div>
           <div className="absolute inset-0 flex flex-col items-center justify-center text-white px-2">
@@ -99,7 +100,8 @@ export const StoryUploadDialog = ({ user }: { user: User }) => {
                 privacy === "public"
                   ? "bg-blue-500 text-white"
                   : "bg-gray-100 text-gray-700"
-              )}>
+              )}
+            >
               <Eye className="w-4 h-4 mr-2" />
               Public
             </button>
@@ -110,7 +112,8 @@ export const StoryUploadDialog = ({ user }: { user: User }) => {
                 privacy === "friends"
                   ? "bg-blue-500 text-white"
                   : "bg-gray-100 text-gray-700"
-              )}>
+              )}
+            >
               <Users className="w-4 h-4 mr-2" />
               Friends
             </button>
@@ -134,7 +137,8 @@ export const StoryUploadDialog = ({ user }: { user: User }) => {
             <div className="relative">
               <button
                 className="absolute top-2 right-2 bg-white p-1 rounded-full shadow hover:bg-gray-100"
-                onClick={handleRemove}>
+                onClick={handleRemove}
+              >
                 <X className="w-4 h-4 text-gray-700" />
               </button>
               {file?.type.startsWith?.("image/") ? (
@@ -167,7 +171,8 @@ export const StoryUploadDialog = ({ user }: { user: User }) => {
             onClick={handleUpload}
             disabled={!file}
             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-xl transition disabled:opacity-50"
-            aria-disabled={isPending}>
+            aria-disabled={isPending}
+          >
             {isPending ? "Uploading..." : "Upload"}
           </button>
         </Dialog.Content>
