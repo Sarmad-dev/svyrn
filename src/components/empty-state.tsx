@@ -12,15 +12,20 @@ const EmptyState = ({
   onActionClick?: () => void;
 }) => {
   return (
-    <div className="flex flex-col items-center text-center p-6 w-full max-w-sm mx-auto">
-      <div className="mb-4">{icon}</div>
-      <h3 className="text-xl font-semibold mb-2">{title}</h3>
-      <p className="text-sm text-gray-500 mb-4">{description}</p>
-      <button
-        onClick={onActionClick}
-        className="bg-teal-600 text-white px-4 py-2 rounded-md hover:bg-teal-700 transition">
-        {actionText}
-      </button>
+    <div className="flex flex-col items-center text-center p-8 w-full max-w-md mx-auto bg-white rounded-xl shadow-md border border-gray-100">
+      <div className="mb-6 p-4 bg-gray-50 rounded-full">
+        {icon}
+      </div>
+      <h3 className="text-2xl font-bold text-gray-900 mb-3">{title}</h3>
+      <p className="text-base text-gray-600 mb-6">{description}</p>
+      {actionText && (
+        <button
+          onClick={onActionClick}
+          className="bg-blue-600 text-white px-6 py-3 rounded-full font-medium hover:bg-blue-700 transition shadow-sm"
+        >
+          {actionText}
+        </button>
+      )}
     </div>
   );
 };

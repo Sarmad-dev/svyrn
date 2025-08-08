@@ -15,6 +15,7 @@ interface Group {
   profilePicture?: string;
   isAdmin: boolean;
   isCreator: boolean;
+  name?: string;
 }
 
 interface Props {
@@ -50,7 +51,7 @@ export default function GroupHeader({ group, groupId, pageId, userId }: Props) {
   });
 
   const { mutate: mutateProfilePicture } = useMutation({
-    mutationKey: ["updateGroupCoverPhoto"],
+    mutationKey: ["updateGroupProfilePicture"],
     mutationFn: async (profilePicture: string) => {
       const result = await updateProfilePicture({
         image: profilePicture,
@@ -99,16 +100,18 @@ export default function GroupHeader({ group, groupId, pageId, userId }: Props) {
   return (
     <div className="w-full relative">
       {/* Cover Photo */}
-      <div className="w-full h-96 max-md:h-64 relative group/cover overflow-hidden rounded-b-md max-md:rounded-none">
+      <div className="w-full h-[300px] md:h-[400px] relative group/cover overflow-hidden rounded-b-xl">
         <Image
           src={coverPhoto || "/images/cover.jpeg"}
           alt="cover photo"
           fill
-          className={cn(isEditable && "group-hover/cover:blur-sm")}
+          className={cn(
+            isEditable && "group-hover/cover:brightness-75 transition-all"
+          )}
+          priority
         />
-
         {isEditable && (
-          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/cover:opacity-100 transition-opacity duration-300 bg-black/30">
+          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/cover:opacity-100 transition-opacity duration-300 bg-black/40">
             <input
               type="file"
               className="hidden"
@@ -120,45 +123,53 @@ export default function GroupHeader({ group, groupId, pageId, userId }: Props) {
                 inputCoverRef.current?.click();
               }}
               variant="secondary"
-              className="flex items-center gap-2 bg-white text-black shadow-md">
-              <Pencil className="w-4 h-4" />
-              Change Cover Photo
+              className="flex items-center gap-2 bg-white text-black shadow-lg rounded-full px-4 py-2 hover:bg-gray-100">
+              <Pencil className="w-5 h-5" />
+              Edit Cover
             </Button>
           </div>
         )}
       </div>
-
-      {/* Profile Picture */}
-      <div className="absolute left-6 bottom-[-55px] w-[150px] h-[150px] rounded-full overflow-hidden border-4 border-white group/avatar">
-        <Image
-          src={avatar || "/images/user.png"}
-          alt="avatar"
-          fill
-          className={cn(
-            "rounded-full",
-            isEditable && "group-hover/avatar:blur-sm"
-          )}
-          objectFit="cover"
-        />
-
-        {isEditable && (
-          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/avatar:opacity-100 transition-opacity duration-300 bg-black/30 rounded-full">
-            <input
-              type="file"
-              className="hidden"
-              ref={inputAvatarRef}
-              onChange={handleAvatarChange}
+      {/* Profile Picture and Name Container */}
+      <div className="container mx-auto px-4 md:px-6">
+        <div className="relative flex flex-col items-center md:items-start gap-4 pt-4 md:pt-0">
+          {/* Profile Picture - Positioned to overlap cover photo */}
+          <div className="absolute -top-[100px] md:-top-[120px] left-1/2 md:left-0 transform md:transform-none -translate-x-1/2 md:translate-x-0 w-[180px] h-[180px] rounded-full overflow-hidden border-4 border-white shadow-xl group/avatar flex-shrink-0 bg-white">
+            <Image
+              src={avatar || "/images/user.png"}
+              alt="avatar"
+              fill
+              className={cn(
+                "rounded-full object-cover",
+                isEditable && "group-hover/avatar:brightness-75 transition-all"
+              )}
             />
-            <Button
-              onClick={() => {
-                inputAvatarRef.current?.click();
-              }}
-              variant="secondary"
-              className="flex items-center gap-2 bg-white text-black shadow-md">
-              <Pencil className="w-4 h-4" />
-            </Button>
+            {isEditable && (
+              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/avatar:opacity-100 transition-opacity duration-300 bg-black/40 rounded-full">
+                <input
+                  type="file"
+                  className="hidden"
+                  ref={inputAvatarRef}
+                  onChange={handleAvatarChange}
+                />
+                <Button
+                  onClick={() => {
+                    inputAvatarRef.current?.click();
+                  }}
+                  variant="secondary"
+                  className="flex items-center gap-2 bg-white text-black shadow-lg rounded-full px-4 py-2 hover:bg-gray-100">
+                  <Pencil className="w-5 h-5" />
+                </Button>
+              </div>
+            )}
           </div>
-        )}
+          {/* Group Name */}
+          <div className="text-center md:text-left mt-[100px] md:mt-[10px] mb-4 md:mb-0 md:ml-[200px]">
+            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight">
+              {group.name}
+            </h1>
+          </div>
+        </div>
       </div>
     </div>
   );

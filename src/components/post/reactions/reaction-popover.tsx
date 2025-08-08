@@ -90,7 +90,10 @@ const ReactionPopover = ({
           {selectedReaction ? (
             reactionsList.find((r) => r.name === selectedReaction)?.emoji
           ) : (
-            <ThumbsUp />
+            <>
+              <ThumbsUp />
+              <p>Reaction</p>
+            </>
           )}
         </span>
       </Button>

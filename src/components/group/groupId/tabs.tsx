@@ -41,33 +41,35 @@ export function AnimatedTabs({
     }
   }, [activeTab]);
 
+  // Filter tabs based on user permissions
+  const visibleTabs = tabItems.filter((tab) => {
+    if (tab.value === "settings") {
+      return group?.isAdmin && group?.isCreator;
+    }
+    return true;
+  });
+
   return (
     <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
       <div className="relative">
-        <TabsList className="relative flex w-full justify-between gap-4 border-b border-gray-300">
-          {tabItems.map((tab, idx) => (
-            <div key={tab.value}>
-              {tab.value === "settings" &&
-              (!group?.isAdmin || !group?.isCreator) ? (
-                <></>
-              ) : (
-                <TabsTrigger
-                  key={tab.value}
-                  value={tab.value}
-                  data-value={tab.value}
-                  ref={(el: HTMLButtonElement | null): void => {
-                    tabsRef.current[idx] = el;
-                  }}
-                  className={cn(
-                    "data-[state=active]:bg-transparent data-[state=active]:border-none relative rounded-none px-4 py-2 text-sm font-medium text-muted-foreground transition-colors"
-                  )}>
-                  {tab.label}
-                </TabsTrigger>
+        <TabsList className="relative flex w-full justify-between gap-2 md:gap-4 border-b border-gray-200 bg-transparent p-0">
+          {visibleTabs.map((tab, idx) => (
+            <TabsTrigger
+              key={tab.value}
+              value={tab.value}
+              data-value={tab.value}
+              ref={(el: HTMLButtonElement | null): void => {
+                tabsRef.current[idx] = el;
+              }}
+              className={cn(
+                "data-[state=active]:bg-transparent data-[state=active]:border-none relative rounded-none px-3 md:px-4 py-3 text-sm md:text-base font-medium text-muted-foreground transition-colors hover:text-gray-900"
               )}
-            </div>
+            >
+              {tab.label}
+            </TabsTrigger>
           ))}
           <motion.div
-            className="absolute bottom-0 h-[2px] bg-primary"
+            className="absolute bottom-0 h-[2px] bg-blue-500"
             layout
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
             style={{
@@ -76,20 +78,23 @@ export function AnimatedTabs({
             }}
           />
         </TabsList>
-        <TabsContent value="discussion">
-          <DiscussionContent user={user} group={group as GroupWithPosts} />
-        </TabsContent>
-        <TabsContent value="about">
-          <AboutTabContent group={group as GroupWithPosts} />
-        </TabsContent>
-        <TabsContent value="settings">
-          <SettingsTabContent group={group as GroupWithPosts} />
-        </TabsContent>
-        <TabsContent value="members">
-          <MembersTabContent
-            members={Array.isArray(group?.members) ? group.members : []}
-          />
-        </TabsContent>
+
+        <div className="mt-6">
+          <TabsContent value="discussion" className="mt-0">
+            <DiscussionContent user={user} group={group as GroupWithPosts} />
+          </TabsContent>
+          <TabsContent value="about" className="mt-0">
+            <AboutTabContent group={group as GroupWithPosts} />
+          </TabsContent>
+          <TabsContent value="settings" className="mt-0">
+            <SettingsTabContent group={group as GroupWithPosts} />
+          </TabsContent>
+          <TabsContent value="members" className="mt-0">
+            <MembersTabContent
+              members={Array.isArray(group?.members) ? group.members : []}
+            />
+          </TabsContent>
+        </div>
       </div>
     </Tabs>
   );

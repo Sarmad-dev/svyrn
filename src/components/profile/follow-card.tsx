@@ -36,32 +36,32 @@ const FollowCard = ({ user }: { user: Author }) => {
   };
 
   return (
-    <Card className="h-fit w-[210px] rounded-md p-0">
+    <Card className="h-fit w-[230px] rounded-xl overflow-hidden p-0 shadow-sm border hover:shadow-md transition-shadow">
       <CardHeader className="sr-only px-0">
         <CardTitle>Following</CardTitle>
         <CardDescription>See You following</CardDescription>
       </CardHeader>
-      <CardContent className="px-0 space-y-2">
-        <div className="w-full h-[130px] relative">
+      <CardContent className="px-0 space-y-3">
+        <div className="w-full h-[140px] relative">
           <Image
             src={user.profilePicture || "/images/user.png"}
             alt="profile picture"
-            className="rounded-md"
+            className=""
             fill
             objectFit="cover"
             loading="eager"
           />
         </div>
-        <Link
-          className="hover:underline font-medium text-sm line-clamp-1 ml-2"
-          href={`/user/${user._id}`}>
-          {user.name}
-        </Link>
-        <div className="w-full relative">
-          <Button
-            className="w-[200px] ml-[5px] mb-2"
-            variant="ghost"
-            onClick={handleFollow}>
+        <div className="px-3">
+          <Link
+            className="hover:underline font-medium text-[15px] line-clamp-1"
+            href={`/user/${user._id}`}>
+            {user.name}
+          </Link>
+          <p className="text-xs text-muted-foreground">@{(user.name || "").replace(/\s+/g, "").toLowerCase()}</p>
+        </div>
+        <div className="px-3 pb-3">
+          <Button className="w-full" variant="outline" onClick={handleFollow}>
             Follow
           </Button>
         </div>

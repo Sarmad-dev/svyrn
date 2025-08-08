@@ -16,7 +16,6 @@ import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
 import { useQuery } from "@tanstack/react-query";
 import { getComments } from "@/lib/actions/post.action";
-
 interface PostCardProps {
   _id: string;
   author: {
@@ -52,7 +51,6 @@ interface PostCardProps {
   };
   currentUser?: User;
 }
-
 export const PostCard = ({
   _id,
   author: {
@@ -69,7 +67,6 @@ export const PostCard = ({
   currentUser,
 }: PostCardProps) => {
   const [showComments, setShowComments] = useState(false);
-
   const { data: session } = authClient.useSession();
   const { data: commentToShow } = useQuery({
     queryKey: ["get-post-comments", _id],
@@ -80,13 +77,12 @@ export const PostCard = ({
       }),
     enabled: !!session?.session.token,
   });
-
   return (
-    <div className="bg-white rounded-lg border border-gray-200 overflow-hidden mb-6 w-full">
+    <div className="bg-white rounded-xl shadow-sm overflow-hidden mb-6 w-full border border-gray-100">
       {/* Post Header */}
       <div className="p-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Avatar>
+          <Avatar className="h-10 w-10">
             <AvatarImage
               src={authorAvatar || "/images/user.png"}
               alt={authorName}
@@ -94,18 +90,17 @@ export const PostCard = ({
           </Avatar>
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-semibold text-sm text-gray-900">
-                <Link href={`/user/${authorId}`} className="hover:underline">
-                  {authorName}
-                </Link>
-              </span>
+              <Link
+                href={`/user/${authorId}`}
+                className="font-semibold text-sm text-gray-900 hover:underline">
+                {authorName}
+              </Link>
               {authorIsVerified && (
-                <Badge variant="default" className="w-4 h-4 p-0">
+                <Badge variant="default" className="w-4 h-4 p-0 bg-blue-600">
                   <svg
-                    className="w-3 h-3"
+                    className="w-3 h-3 text-white"
                     fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
+                    viewBox="0 0 24 24">
                     <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
                   </svg>
                 </Badge>
@@ -119,15 +114,14 @@ export const PostCard = ({
                 in{" "}
                 <Link
                   href={`/groups/${group?._id as string}`}
-                  className="hover:underline"
-                >
+                  className="text-blue-600 hover:underline">
                   {group?.name}
                 </Link>
               </p>
             )}
           </div>
         </div>
-        <button className="text-gray-400 hover:text-gray-600">
+        <button className="text-gray-400 hover:text-gray-600 p-2 rounded-full hover:bg-gray-100">
           <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
             <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
           </svg>
@@ -135,6 +129,10 @@ export const PostCard = ({
       </div>
 
       {/* Post Content */}
+      {content.text && (
+        <p className="px-4 pb-3 text-gray-800 text-base">{content.text}</p>
+      )}
+
       {content.media &&
         content.media?.length > 0 &&
         content.media[0].type == "image" && (
@@ -150,7 +148,7 @@ export const PostCard = ({
               isVerified: authorIsVerified,
             }}
             trigger={
-              <div className="relative w-full aspect-[4/5] md:aspect-[16/9] bg-muted cursor-pointer">
+              <div className="relative w-full aspect-[4/2.5] bg-gray-100 cursor-pointer">
                 <Image
                   src={content.media[0].url}
                   alt="Post content"
@@ -159,7 +157,7 @@ export const PostCard = ({
                   loading="lazy"
                   placeholder="blur"
                   blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nMTAwJScgaGVpZ2h0PScxMDAlJyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnPjxyZWN0IHdpZHRoPScxMDAlJyBoZWlnaHQ9JzEwMCUnIGZpbGw9JyNlZWUnLz48L3N2Zz4="
-                  className="object-contain md:object-cover"
+                  className="object-cover"
                 />
               </div>
             }
@@ -169,7 +167,7 @@ export const PostCard = ({
       {content.media &&
         content.media?.length > 0 &&
         content.media[0].type == "video" && (
-          <div className="aspect-video relative z-0 mb-4 w-full">
+          <div className="aspect-video relative z-0 w-full">
             <BeautifulVideo
               src={content.media[0].url}
               plyrOptions={{
@@ -200,14 +198,12 @@ export const PostCard = ({
             variant="outline"
             size="icon"
             className="border-none cursor-pointer"
-            onClick={() => setShowComments((prev) => !prev)}
-          >
+            onClick={() => setShowComments((prev) => !prev)}>
             <MessageCircle />
           </Button>
           <Button
             variant="outline"
-            className="border-none cursor-pointer hover:text-blue-500"
-          >
+            className="border-none cursor-pointer hover:text-blue-500">
             <Share2 />
           </Button>
           <button className="ml-auto text-gray-600 hover:text-gray-800">
@@ -221,43 +217,32 @@ export const PostCard = ({
           </span>
           <span className="text-sm text-gray-500">😍 😃</span>
         </div>
+      </div>
 
-        {/* Comments */}
-        <div className="overflow-hidden">
-          <AnimatePresence initial={false}>
-            {showComments && (
-              <motion.div
-                key="comments"
-                initial={{ opacity: 0, y: -8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.18 }}
-                className="space-y-3 will-change-transform"
-              >
-                {commentToShow &&
-                  commentToShow.length > 0 &&
-                  commentToShow.map((comment: Comment, index: number) => (
-                    <CommentItem
-                      key={index}
-                      comment={comment as Comment}
-                      postId={_id}
-                    />
-                  ))}
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-
-        {/* Add Comment */}
-        <div className="flex items-center gap-3 mt-4 pt-3 border-t border-gray-100">
-          <Avatar>
-            <AvatarImage
-              src={currentUser?.profilePicture || "/images/user.png"}
-              alt="Your avatar"
-            />
-          </Avatar>
-          <CommentInput postId={_id} />
-        </div>
+      {/* Comments */}
+      <div className="px-4 pb-4 overflow-hidden">
+        <AnimatePresence initial={false}>
+          {showComments && (
+            <motion.div
+              key="comments"
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.18 }}
+              className="space-y-4 will-change-transform">
+              {commentToShow &&
+                commentToShow.length > 0 &&
+                commentToShow.map((comment: Comment, index: number) => (
+                  <CommentItem
+                    key={index}
+                    comment={comment as Comment}
+                    postId={_id}
+                  />
+                ))}
+              <CommentInput postId={_id} />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );

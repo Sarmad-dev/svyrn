@@ -1,7 +1,6 @@
 "use client";
 import GroupHeader from "@/components/group/groupId/group-header";
 import Header from "@/components/layout/header/header";
-import ProfileLeftSide from "@/components/profile/left-side";
 import { ProfileAnimatedTabs } from "@/components/profile/tabs/profile-animated-tabs";
 import { getMe } from "@/lib/actions/user.action";
 import { authClient } from "@/lib/auth-client";
@@ -29,7 +28,7 @@ const ProfilePage = () => {
     <main>
       <Header />
       <div className="w-full">
-        <div className="container mx-auto">
+        <div className="container mx-auto px-3 md:px-0">
           <GroupHeader
             userId={user?.id}
             group={{
@@ -37,13 +36,12 @@ const ProfilePage = () => {
               isCreator: true,
               profilePicture: user?.profilePicture,
               coverPhoto: user?.coverPhoto,
+              name: user?.name,
             }}
           />
 
-          <div className="flex gap-16 max-2xl:gap-5 mt-16 max-2xl:mt-12">
-            <div className="max-md:hidden">
-              <ProfileLeftSide user={user as User} />
-            </div>
+          {/* Tabs anchored directly below header (like Facebook). Name is displayed above the tabs. */}
+          <div className="mt-16 max-2xl:mt-12">
             <ProfileAnimatedTabs user={user as User} />
           </div>
         </div>

@@ -18,8 +18,8 @@ const MessageItem: React.FC<MessageItemProps> = ({
 }) => {
   return (
     <Link href={`/chat?conversationId=${conversationId}`}>
-      <div className="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-lg">
-        <div className="w-10 h-10 relative bg-gray-100 rounded-full">
+      <div className="flex items-center gap-3 p-4 bg-white border rounded-xl hover:shadow-sm transition-shadow">
+        <div className="w-12 h-12 relative bg-gray-100 rounded-full overflow-hidden">
           <Image
             src={profilePicture || "/images/user.png"}
             alt="Profile Picture"
@@ -28,11 +28,11 @@ const MessageItem: React.FC<MessageItemProps> = ({
             objectFit="cover"
           />
         </div>
-        <div className="flex-1">
-          <h4 className="font-semibold text-gray-900">{name}</h4>
-          <p className="text-sm text-gray-600">{lastMessage}</p>
+        <div className="flex-1 min-w-0">
+          <h4 className="font-semibold text-gray-900 truncate">{name}</h4>
+          <p className="text-sm text-gray-600 truncate">{lastMessage}</p>
         </div>
-        <span className="text-xs text-gray-500">{time}</span>
+        <span className="text-xs text-gray-500 whitespace-nowrap">{time}</span>
       </div>
     </Link>
   );

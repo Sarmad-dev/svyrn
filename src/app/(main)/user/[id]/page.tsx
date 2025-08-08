@@ -23,7 +23,6 @@ import { Loader2, UserCheck, UserPlus } from "lucide-react";
 const UserPage = () => {
   const { id } = useParams();
   const queryClient = useQueryClient();
-
   const { data, isPending } = authClient.useSession();
   const results = useQueries({
     queries: [
@@ -58,7 +57,6 @@ const UserPage = () => {
       },
     ],
   });
-
   const { mutateAsync: follow } = useMutation({
     mutationKey: ["follow-user"],
     mutationFn: async () =>
@@ -70,7 +68,6 @@ const UserPage = () => {
       queryClient.invalidateQueries({ queryKey: ["following"] });
     },
   });
-
   const { mutateAsync: unfollow } = useMutation({
     mutationKey: ["unfollow-user"],
     mutationFn: async () =>
@@ -82,62 +79,58 @@ const UserPage = () => {
       queryClient.invalidateQueries({ queryKey: ["following"] });
     },
   });
-
   const handleFollowUser = async () => {
     await follow();
   };
-
   const handleUnfollowUser = async () => {
     await unfollow();
   };
-
   const user = results[0].data;
   const posts = results[1].data;
   const following = results[2].data;
   const me = results[3].data;
-
   return (
-    <main>
+    <main className="bg-gray-50 min-h-screen">
       <Header />
       {isPending || results.some((result) => result.isLoading) ? (
         <div className="w-full h-[calc(100vh-80px)] flex items-center justify-center">
-          <Loader2 className="animate-spin" />
+          <Loader2 className="animate-spin text-blue-600 size-12" />
         </div>
       ) : (
-        <div className="w-full">
-          <div className="container mx-auto">
-            <GroupHeader
-              group={{
-                isAdmin: false,
-                isCreator: false,
-                profilePicture: user?.user?.profilePicture,
-                coverPhoto: user?.user?.coverPhoto,
-              }}
-            />
-            <div className="relative left-[170px] top-[10px]">
+        <div className="w-full container mx-auto">
+          <GroupHeader
+            group={{
+              isAdmin: false,
+              isCreator: false,
+              profilePicture: user?.user?.profilePicture,
+              coverPhoto: user?.user?.coverPhoto,
+              name: user?.user?.name,
+            }}
+          />
+          <div className="container mx-auto px-4 py-4">
+            <div className="relative md:left-4 md:top-[0px] z-10 mb-4 md:mb-0">
               {following?.some((f) => f._id === id) ? (
                 <Button
                   variant="outline"
-                  className="border-green-600 text-green-600 hover:bg-green-50 font-medium flex items-center gap-2"
+                  className="border-blue-600 text-blue-600 hover:bg-blue-50 font-medium flex items-center gap-2 rounded-full px-4 py-2 shadow-md"
                   onClick={handleUnfollowUser}>
-                  <UserCheck className="w-4 h-4" />
-                  Unfollow
+                  <UserCheck className="w-5 h-5" />
+                  Following
                 </Button>
               ) : (
                 <Button
-                  className="bg-blue-600 hover:bg-blue-700 text-white font-medium flex items-center gap-2"
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-medium flex items-center gap-2 rounded-full px-4 py-2 shadow-md"
                   onClick={handleFollowUser}>
-                  <UserPlus className="w-4 h-4" />
+                  <UserPlus className="w-5 h-5" />
                   Follow
                 </Button>
               )}
             </div>
-
-            <div className="flex gap-16 max-2xl:gap-5 mt-16 max-2xl:mt-12">
-              <div className="max-md:hidden block">
+            <div className="flex flex-col md:flex-row gap-6 mt-8">
+              <div className="md:w-1/3 lg:w-1/4 hidden md:block">
                 <UserLeftSide user={user?.user as User} />
               </div>
-              <div className="flex flex-1 flex-col gap-3">
+              <div className="flex-1">
                 {posts && posts.length > 0 ? (
                   posts.map(
                     (post) =>
@@ -158,11 +151,11 @@ const UserPage = () => {
                   <EmptyState
                     icon={
                       <svg
-                        width="64"
-                        height="64"
+                        width="80"
+                        height="80"
                         viewBox="0 0 24 24"
                         fill="none"
-                        stroke="#3B8183"
+                        stroke="#3B82F6"
                         strokeWidth="1.5"
                         strokeLinecap="round"
                         strokeLinejoin="round">
@@ -173,17 +166,17 @@ const UserPage = () => {
                           height="14"
                           rx="2"
                           ry="2"
-                          stroke="#000"
-                          fill="#CFEAE9"
+                          stroke="#3B82F6"
+                          fill="#EFF6FF"
                         />
-                        <path d="M3 17l5-5 4 4 5-5 4 4" stroke="#000" />
-                        <path d="M3 21h18" stroke="#000" />
+                        <path d="M3 17l5-5 4 4 5-5 4 4" stroke="#3B82F6" />
+                        <path d="M3 21h18" stroke="#3B82F6" />
                       </svg>
                     }
                     title="No Posts Yet"
-                    description="You haven’t written any posts yet."
-                    actionText="Create Post"
-                    onActionClick={() => alert("Create Post")}
+                    description="This user hasn’t shared any posts yet. Check back later!"
+                    actionText="Back to Home"
+                    onActionClick={() => (window.location.href = "/")}
                   />
                 )}
               </div>

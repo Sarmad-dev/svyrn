@@ -34,7 +34,7 @@ const FollowingContent = () => {
 
   return (
     <div className="flex flex-col gap-8">
-      <div className="flex gap-3 flex-wrap">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {following && following.length > 0 ? (
           following.map((user) => <FollowingCard key={user._id} user={user} />)
         ) : (
@@ -91,7 +91,7 @@ const FollowingContent = () => {
 
       <div className="space-y-2">
         <h2 className="font-semibold text-lg">People you may know</h2>
-        <div className="flex gap-x-3 flex-wrap mb-3">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-3">
           {usersToFollow &&
             usersToFollow.length > 0 &&
             usersToFollow.map(

@@ -36,29 +36,35 @@ const Group = () => {
 
   if (isPending || isUserPending || isDbUserPending) {
     return (
-      <div className="flex items-center justify-center w-full">
-        <Loader2 className="animate-spin" />
+      <div className="min-h-screen flex items-center justify-center w-full bg-gray-50">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="animate-spin w-8 h-8 text-blue-500" />
+          <p className="text-gray-600">Loading group...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <main className="w-full">
+    <main className="w-full min-h-screen bg-gray-50">
       <GroupHeader
         group={{
           isAdmin: group?.isAdmin as boolean,
           isCreator: group?.isCreator as boolean,
           profilePicture: group?.profilePicture,
           coverPhoto: group?.coverPhoto,
+          name: group?.name,
         }}
         groupId={id as string}
       />
 
-      <div className="w-full flex items-center justify-center mt-8">
-        <AnimatedTabs
-          user={currentUser?.user as User}
-          group={group as GroupWithPosts}
-        />
+      <div className="container mx-auto px-4 md:px-6 lg:px-8 py-6">
+        <div className="max-w-4xl mx-auto">
+          <AnimatedTabs
+            user={currentUser?.user as User}
+            group={group as GroupWithPosts}
+          />
+        </div>
       </div>
     </main>
   );
