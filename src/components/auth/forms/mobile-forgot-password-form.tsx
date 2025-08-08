@@ -12,7 +12,7 @@ import { authClient } from "@/lib/auth-client";
 import { config } from "@/lib/config";
 import { forgotPasswordSchema } from "@/lib/validations";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
+import { Loader2, Mail } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 import { useForm } from "react-hook-form";
@@ -49,40 +49,42 @@ const MobileForgotPasswordForm = () => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
-        <div className="text-center">
-          <h3 className="text-lg font-medium text-muted-foreground">
-            Enter you email to reset password
-          </h3>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 w-full max-w-sm">
+        <div className="text-center space-y-1">
+          <h2 className="text-2xl font-semibold">Reset password</h2>
+          <p className="text-sm text-muted-foreground">We’ll email you a reset link</p>
         </div>
-        <FormField
-          name="email"
-          control={form.control}
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <Input
-                  placeholder="Email"
-                  className="placeholder:text-primary border-[#3737378C] rounded-sm h-[50px]"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+
+        <div className="rounded-2xl border bg-white/80 backdrop-blur p-4 shadow-lg space-y-4">
+          <FormField
+            name="email"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+                      <Mail size={18} />
+                    </span>
+                    <Input placeholder="Email address" className="pl-9 h-12 rounded-xl" {...field} />
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
         <Button
-          className="text-white w-full 2xl:h-[50px] cursor-pointer"
-          disabled={isSubmitting}>
-          {isSubmitting ? (
-            <Loader2 className="animate-spin" />
-          ) : (
-            "Send Reset Link"
-          )}
+          className="w-full h-12 rounded-xl bg-gradient-to-r from-[#4dabf7] to-[#6fb3ff] text-white shadow-md active:scale-[0.98] transition"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? <Loader2 className="animate-spin" /> : "Send reset link"}
         </Button>
-        <div className="w-full flex justify-end">
-          <Link href="/sign-in" className="text-primary">
-            Back to Signin
+
+        <div className="text-center text-sm">
+          <Link href="/sign-in" className="text-primary font-semibold">
+            Back to sign in
           </Link>
         </div>
       </form>
