@@ -80,26 +80,26 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
   return (
     <div className="bg-white rounded-2xl max-md:rounded-none overflow-hidden shadow-sm border border-gray-200">
       {/* Cover Photo */}
-      <div className="relative h-64 max-md:h-48">
-        <div className="h-full w-full relative">
-          <Image
-            src={coverImage || "/images/cover.jpeg"}
-            alt="Cover"
-            fill
-            objectFit="cover"
-          />
-        </div>
+      <div className="relative w-full h-64 max-md:h-48">
+        <Image
+          src={coverImage || "/images/cover.jpeg"}
+          alt="Cover"
+          fill
+          sizes="(max-width: 768px) 100vw, 1200px"
+          className="object-cover"
+          priority
+        />
 
         {/* Profile Picture */}
         <div className="absolute left-6 bottom-0 transform translate-y-1/2">
-          <div className="w-32 h-32 relative rounded-full border-4 border-white overflow-hidden">
-            <Image
-              src={profileImage || "/images/user.png"}
-              alt={name}
-              fill
-              objectFit="cover"
-            />
-          </div>
+          <Image
+            src={profileImage || "/images/user.png"}
+            alt={name}
+            width={128}
+            height={128}
+            className="rounded-full object-cover border-4 border-white"
+            priority
+          />
         </div>
       </div>
 
@@ -108,7 +108,9 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
         <h1 className="text-2xl font-bold text-gray-900 mb-2">{name}</h1>
         <p className="text-gray-600 mb-2">{description}</p>
         <a
-          href="#"
+          href={website.startsWith("http") ? website : `https://${website}`}
+          target="_blank"
+          rel="noopener noreferrer"
           className="text-[#4eaae9] hover:underline text-sm font-medium">
           {website}
         </a>
@@ -127,45 +129,61 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
 
         {/* Quick Links */}
         <div className="grid grid-cols-3 gap-4 mt-6">
+          {/* Shop */}
           <div className="text-center">
-            <div className="h-24 relative rounded-lg overflow-hidden mb-2">
-              <Image src={shopImage} alt="Shop" fill objectFit="cover" />
+            <div className="h-24 w-full relative rounded-lg overflow-hidden mb-2">
+              <Image
+                src={shopImage || "/images/placeholder.jpg"}
+                alt="Shop"
+                fill
+                sizes="(max-width: 768px) 100vw, 400px"
+                className="object-cover"
+                loading="lazy"
+              />
             </div>
             <Link href={`/marketplace/${id}`}>
               <p className="text-sm font-medium text-gray-700">
-                Visit {name}&apos;s
-                <br />
+                Visit {name}&apos;s <br />
                 <span>SVRYN Shop</span>
               </p>
             </Link>
           </div>
 
+          {/* Photos */}
           <div className="text-center">
-            <div className="h-24 relative rounded-lg overflow-hidden mb-2">
+            <div className="h-24 w-full relative rounded-lg overflow-hidden mb-2">
               <Image
                 src={photosImage || "/images/user.png"}
                 alt="Photos"
                 fill
-                objectFit="cover"
+                sizes="(max-width: 768px) 100vw, 400px"
+                className="object-cover"
+                loading="lazy"
               />
             </div>
             <Link href={`/profile`}>
               <p className="text-sm font-medium text-gray-700">
-                View {name}&apos;s
-                <br />
+                View {name}&apos;s <br />
                 <span>Photos</span>
               </p>
             </Link>
           </div>
 
+          {/* Videos */}
           <div className="text-center">
-            <div className="h-24 relative rounded-lg overflow-hidden mb-2">
-              <Image src={videosImage} alt="Videos" fill objectFit="cover" />
+            <div className="h-24 w-full relative rounded-lg overflow-hidden mb-2">
+              <Image
+                src={videosImage || "/images/placeholder.jpg"}
+                alt="Videos"
+                fill
+                sizes="(max-width: 768px) 100vw, 400px"
+                className="object-cover"
+                loading="lazy"
+              />
             </div>
             <Link href={`/profile`}>
               <p className="text-sm font-medium text-gray-700">
-                View {name}&apos;s
-                <br />
+                View {name}&apos;s <br />
                 <span>Videos</span>
               </p>
             </Link>
