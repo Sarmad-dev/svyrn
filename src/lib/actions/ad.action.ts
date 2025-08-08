@@ -21,17 +21,22 @@ export const createAd = async <T>({
 
     if (!res.ok) {
       toast.error("Failed to create ad");
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err?.message || "Failed to create ad");
     }
 
     const response = await res.json();
 
     if (response.status === "success") {
       toast.success(response.message);
+      return response.data?.ad;
     } else {
       toast.error(response.message);
+      throw new Error(response.message);
     }
   } catch (error) {
     console.log(error);
+    throw error;
   }
 };
 
