@@ -180,9 +180,6 @@ export const PostCard = ({
 
       {/* Post Actions */}
       <div className="p-4">
-        {content.text && (
-          <p className="text-gray-800 mb-3 text-sm">{content.text}</p>
-        )}
         <div className="flex items-center gap-4 mb-3">
           <ReactionPopover
             postId={_id}
