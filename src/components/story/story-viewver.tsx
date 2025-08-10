@@ -1,13 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   X,
   Heart,
   MessageCircle,
   Send,
-  Smile,
   ChevronUp,
   Eye,
-  MoreHorizontal,
 } from "lucide-react";
 import Image from "next/image";
 import { authClient } from "@/lib/auth-client";
@@ -138,10 +137,6 @@ export const StoryViewer = ({ stories, onClose }: Props) => {
     setProgress(0);
   }, [currentStory]);
 
-  // Early return if currentStory is undefined (after all hooks)
-  if (!currentStory) {
-    return null;
-  }
 
   const handleNext = useCallback(() => {
     if (currentIndex < stories.length - 1) {
@@ -213,6 +208,11 @@ export const StoryViewer = ({ stories, onClose }: Props) => {
       commentMutation.mutate(commentText.trim());
     }
   };
+
+    // Early return if currentStory is undefined (after all hooks)
+    if (!currentStory) {
+      return null;
+    }
 
   return (
     <div className="fixed inset-0 bg-black z-50 flex flex-col items-center justify-center overflow-hidden">

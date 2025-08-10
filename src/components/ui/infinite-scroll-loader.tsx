@@ -30,8 +30,8 @@ export const InfiniteScrollLoader: React.FC<InfiniteScrollLoaderProps> = ({
     return (
       <div className={`flex justify-center py-8 ${className}`}>
         <div className="text-center text-gray-500">
-          <p className="text-sm">🎉 You've reached the end!</p>
-          <p className="text-xs mt-1">You've seen all {totalPosts} posts</p>
+          <p className="text-sm">🎉 You&apos;ve reached the end!</p>
+          <p className="text-xs mt-1">You&apos;ve seen all {totalPosts} posts</p>
         </div>
       </div>
     );
