@@ -200,7 +200,7 @@ const MobileSignupForm = () => {
               </div>
 
               <div className="text-center text-sm text-gray-600">
-                Don't have an account?{" "}
+                Don&apos;t have an account?{" "}
                 <Link href="/sign-in" className="font-semibold text-gray-900">
                   Login.
                 </Link>

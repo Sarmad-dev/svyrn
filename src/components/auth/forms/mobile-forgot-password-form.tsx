@@ -8,12 +8,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { authClient } from "@/lib/auth-client";
 import { config } from "@/lib/config";
 import { forgotPasswordSchema } from "@/lib/validations";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2, ChevronUp, ChevronDown } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -57,7 +56,7 @@ const MobileForgotPasswordForm = () => {
           <div className="text-center space-y-4">
             <h1 className="text-3xl font-bold text-black">Forgot Your Password</h1>
             <p className="text-gray-600">
-              Enter your email address below, and we'll send you a link to reset your password.
+              Enter your email address below, and we&apos;ll send you a link to reset your password.
             </p>
           </div>
 

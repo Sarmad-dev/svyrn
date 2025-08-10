@@ -55,7 +55,7 @@ const AuthBottomSheet = () => {
 
         <div className="space-y-4 text-gray-700">
           <p>
-            SVRYN is not just another platform - it's a movement. A censorship-resistant space 
+            SVRYN is not just another platform - it&apos;s a movement. A censorship-resistant space 
             where truth-seekers, healers, creatives, and sovereign thinkers gather without fear of 
             shadowbans, suppression, or manipulation.
           </p>

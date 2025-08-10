@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import HomeProfileHeader from "@/components/home-profile-header";
 import { PostCard } from "@/components/post-card";
