@@ -1,17 +1,19 @@
 import { toast } from "sonner";
 import { config } from "../config";
 
+interface MediaItem {
+  url: string;
+  caption: string;
+}
+
 export const createStory = async ({
   token,
-  content: { caption, url },
-  privacy = "public",
+  mediaItems,
+  privacy = "friends",
 }: {
   token: string;
-  content: {
-    caption: string;
-    url: string;
-  };
-  privacy?: "public" | "friends";
+  mediaItems: MediaItem[];
+  privacy?: "public" | "friends" | "close_friends";
 }) => {
   try {
     const response = await fetch(`${config.apiUrl}/api/stories`, {
@@ -21,25 +23,24 @@ export const createStory = async ({
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
-        content: {
-          caption,
-          url,
-        },
+        mediaItems,
         privacy,
       }),
     });
 
-    console.log("Response from createStory:", response);
-
     if (!response.ok) {
-      toast.error("Failed to create story");
+      const errorData = await response.json();
+      toast.error(errorData.message || "Failed to create story");
+      throw new Error(errorData.message || "Failed to create story");
     }
 
     const data = await response.json();
     if (data.status === "success") {
-      return data.story;
+      toast.success("Story created successfully!");
+      return data.data.story;
     } else {
-      toast.error("Failed to create story");
+      toast.error(data.message || "Failed to create story");
+      throw new Error(data.message || "Failed to create story");
     }
   } catch (error) {
     console.error("Error creating story:", error);

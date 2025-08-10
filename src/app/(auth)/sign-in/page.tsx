@@ -22,12 +22,6 @@ const SignIn = () => {
         </CardContent>
       </Card>
       <div className="md:hidden flex flex-col gap-3 items-center">
-        <Image
-          src={"/icons/logo-gray.png"}
-          width={150}
-          height={150}
-          alt="logo"
-        />
         <MobileSigninForm />
       </div>
     </>

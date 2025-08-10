@@ -49,48 +49,57 @@ export const createProduct = async ({
 export const getProducts = async ({
   token,
   search,
+  page = 1,
+  limit = 12,
 }: {
   search?: string;
   token: string;
+  page?: number;
+  limit?: number;
 }) => {
   try {
-    let response;
-    if (!search) {
-      response = await fetch(`${config.apiUrl}/api/marketplace/products`, {
+    // Build query parameters
+    const params = new URLSearchParams({
+      page: page.toString(),
+      limit: limit.toString(),
+    });
+
+    if (search) {
+      params.append('search', search);
+    }
+
+    const response = await fetch(
+      `${config.apiUrl}/api/marketplace/products?${params.toString()}`,
+      {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-      });
-    } else {
-      response = await fetch(
-        `${config.apiUrl}/api/marketplace/products?search=${search}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-    }
+      }
+    );
 
     if (!response.ok) {
       const errorText = await response.text();
       console.error("API Error Response:", errorText);
       toast.error("Something went wrong");
+      throw new Error(`HTTP ${response.status}: ${errorText}`);
     }
 
     const res = await response.json();
 
     if (res.status === "success") {
-      return res.data.products;
+      return {
+        products: res.data.products,
+        pagination: res.data.pagination,
+      };
     } else {
       toast.error(res.message);
+      throw new Error(res.message);
     }
   } catch (error) {
     console.log(error);
+    throw error;
   }
 };
 

@@ -1,3 +1,4 @@
+import AuthBottomSheet from "@/components/auth/auth-bottom-sheet";
 import Ellipses from "@/components/auth/Ellipses";
 import Side from "@/components/auth/Side";
 import Image from "next/image";
@@ -20,8 +21,11 @@ const AuthLayout = ({ children }: AuthProps) => {
         </div>
         {children}
       </div>
-      <div className="md:hidden w-full h-full flex items-center justify-center">
-        {children}
+      <div className="md:hidden flex flex-col w-full">
+        <div className="w-full flex-1 flex items-center justify-center">
+          {children}
+        </div>
+        <AuthBottomSheet />
       </div>
     </main>
   );

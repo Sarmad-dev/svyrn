@@ -11,29 +11,41 @@ import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
 import { signupSchema } from "@/lib/validations";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2, UserRound, Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { Loader2, Eye, EyeOff, AppleIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { toast } from "sonner";
 import z from "zod";
+import Image from "next/image";
+
+// Extend signup schema to include confirmPassword
+const extendedSignupSchema = signupSchema.extend({
+  confirmPassword: z.string(),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"],
+});
 
 const MobileSignupForm = () => {
   const router = useRouter();
-  const form = useForm<z.infer<typeof signupSchema>>({
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const form = useForm<z.infer<typeof extendedSignupSchema>>({
     mode: "onChange",
-    resolver: zodResolver(signupSchema),
+    resolver: zodResolver(extendedSignupSchema),
     defaultValues: {
       email: "",
       password: "",
       name: "",
+      confirmPassword: "",
     },
   });
 
-  const onSubmit = async (data: z.infer<typeof signupSchema>) => {
+  const onSubmit = async (data: z.infer<typeof extendedSignupSchema>) => {
     const { email, password, name } = data;
-    console.log(email, password, name);
 
     await authClient.signUp.email(
       {
@@ -43,7 +55,7 @@ const MobileSignupForm = () => {
       },
       {
         onSuccess: async () => {
-          toast.success("Sign Up successfull");
+          toast.success("Sign Up successful");
           router.push("/home");
         },
         onError: (ctx) => {
@@ -55,100 +67,151 @@ const MobileSignupForm = () => {
   };
 
   const isSubmitting = form.formState.isSubmitting;
-  const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 w-full max-w-sm">
-        <div className="text-center space-y-1">
-          <h2 className="text-2xl font-semibold">Create your account</h2>
-          <p className="text-sm text-muted-foreground">Start your experience with us</p>
+    <div className="h-fit bg-gray-50 flex flex-col w-[calc(100vw-50px)] mx-auto">
+      <div className="flex-1 flex items-center justify-center p-4 px-8">
+        <div className="w-full space-y-8">
+          {/* Header */}
+          <div className="text-center space-y-2">
+            <h1 className="text-3xl font-bold text-black">SVRYN SOCIAL</h1>
+            <p className="text-gray-600">Welcome back</p>
+          </div>
+
+          {/* Form */}
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <FormField
+                name="name"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input
+                        placeholder="Name"
+                        className="h-12 rounded-lg border-gray-300 text-gray-900 placeholder:text-gray-500"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                name="email"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input
+                        placeholder="Email"
+                        className="h-12 rounded-lg border-gray-300 text-gray-900 placeholder:text-gray-500"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                name="password"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <div className="relative">
+                        <Input
+                          type={showPassword ? "text" : "password"}
+                          placeholder="Password"
+                          className="h-12 rounded-lg border-gray-300 text-gray-900 placeholder:text-gray-500 pr-10"
+                          {...field}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
+                        >
+                          {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                        </button>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                name="confirmPassword"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <div className="relative">
+                        <Input
+                          type={showConfirmPassword ? "text" : "password"}
+                          placeholder="Confirm Password"
+                          className="h-12 rounded-lg border-gray-300 text-gray-900 placeholder:text-gray-500 pr-10"
+                          {...field}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
+                        >
+                          {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                        </button>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <Button
+                type="submit"
+                className="w-full h-12 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? <Loader2 className="animate-spin" size={20} /> : "Sign up"}
+              </Button>
+
+              {/* Divider */}
+              <div className="flex items-center space-x-4 my-6">
+                <div className="flex-1 h-px bg-gray-300"></div>
+                <span className="text-gray-500 text-sm">or</span>
+                <div className="flex-1 h-px bg-gray-300"></div>
+              </div>
+
+              {/* Social Login */}
+              <div className="flex justify-center space-x-8">
+                <button type="button" className="text-gray-700">
+                  <svg width="24" height="24" viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                    <path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                  </svg>
+                </button>
+                <button type="button" className="text-gray-700">
+                  <Image src="/icons/apple-logo.png" alt="apple" width={24} height={24} />
+                </button>
+              </div>
+
+              <div className="text-center text-sm text-gray-600">
+                Don't have an account?{" "}
+                <Link href="/sign-in" className="font-semibold text-gray-900">
+                  Login.
+                </Link>
+              </div>
+            </form>
+          </Form>
         </div>
+      </div>
 
-        <div className="rounded-2xl border bg-white/80 backdrop-blur p-4 shadow-lg space-y-4">
-          <FormField
-            name="name"
-            control={form.control}
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
-                      <UserRound size={18} />
-                    </span>
-                    <Input placeholder="Full name" className="pl-9 h-12 rounded-xl" {...field} />
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            name="email"
-            control={form.control}
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
-                      <Mail size={18} />
-                    </span>
-                    <Input placeholder="Email address" className="pl-9 h-12 rounded-xl" {...field} />
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            name="password"
-            control={form.control}
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
-                      <Lock size={18} />
-                    </span>
-                    <Input
-                      type={showPassword ? "text" : "password"}
-                      placeholder="Create a password"
-                      className="pl-9 pr-10 h-12 rounded-xl"
-                      {...field}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword((s) => !s)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
-                      aria-label={showPassword ? "Hide password" : "Show password"}
-                    >
-                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                    </button>
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-
-        <Button
-          className="w-full h-12 rounded-xl bg-gradient-to-r from-[#4dabf7] to-[#6fb3ff] text-white shadow-md active:scale-[0.98] transition"
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? <Loader2 className="animate-spin" /> : "Create account"}
-        </Button>
-
-        <div className="text-center text-sm">
-          Already have an account?{" "}
-          <Link href="/sign-in" className="text-primary font-semibold">
-            Sign in
-          </Link>
-        </div>
-      </form>
-    </Form>
+      
+    </div>
   );
 };
 

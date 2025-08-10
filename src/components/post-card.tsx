@@ -15,7 +15,10 @@ import { PostMediaDialog } from "./post/post-media-dialog";
 import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
 import { useQuery } from "@tanstack/react-query";
-import { getComments } from "@/lib/actions/post.action";
+import { getComments, sharePost } from "@/lib/actions/post.action";
+import { useMutation } from "@tanstack/react-query";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
 interface PostCardProps {
   _id: string;
   author: {
@@ -68,6 +71,28 @@ export const PostCard = ({
 }: PostCardProps) => {
   const [showComments, setShowComments] = useState(false);
   const { data: session } = authClient.useSession();
+  const [isShareOpen, setShareOpen] = useState(false);
+  const [shareDest, setShareDest] = useState<"feed" | "group" | "conversation">("feed");
+  const [shareCaption, setShareCaption] = useState("");
+  const [targetGroupId, setTargetGroupId] = useState<string>("");
+  const [targetConversationId, setTargetConversationId] = useState<string>("");
+
+  const shareMutation = useMutation({
+    mutationKey: ["share-post", _id],
+    mutationFn: async () =>
+      await sharePost({
+        token: session?.session.token as string,
+        postId: _id,
+        destination: shareDest,
+        caption: shareCaption,
+        groupId: shareDest === "group" ? targetGroupId : undefined,
+        conversationId: shareDest === "conversation" ? targetConversationId : undefined,
+      }),
+    onSuccess: () => {
+      setShareOpen(false);
+      setShareCaption("");
+    },
+  });
   const { data: commentToShow } = useQuery({
     queryKey: ["get-post-comments", _id],
     queryFn: async () =>
@@ -198,11 +223,71 @@ export const PostCard = ({
             onClick={() => setShowComments((prev) => !prev)}>
             <MessageCircle />
           </Button>
-          <Button
-            variant="outline"
-            className="border-none cursor-pointer hover:text-blue-500">
-            <Share2 />
-          </Button>
+          <Dialog open={isShareOpen} onOpenChange={setShareOpen}>
+            <DialogTrigger asChild>
+              <Button
+                variant="outline"
+                className="border-none cursor-pointer hover:text-blue-500">
+                <Share2 />
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="p-4">
+              <DialogHeader>
+                <DialogTitle>Share post</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-3">
+                <div className="flex gap-2 text-sm">
+                  <button
+                    className={`px-3 py-1 rounded-full border ${shareDest === "feed" ? "bg-blue-500 text-white" : ""}`}
+                    onClick={() => setShareDest("feed")}
+                  >
+                    Feed
+                  </button>
+                  <button
+                    className={`px-3 py-1 rounded-full border ${shareDest === "group" ? "bg-blue-500 text-white" : ""}`}
+                    onClick={() => setShareDest("group")}
+                  >
+                    Group
+                  </button>
+                  <button
+                    className={`px-3 py-1 rounded-full border ${shareDest === "conversation" ? "bg-blue-500 text-white" : ""}`}
+                    onClick={() => setShareDest("conversation")}
+                  >
+                    Conversation
+                  </button>
+                </div>
+                {shareDest === "group" && (
+                  <input
+                    className="w-full border rounded px-3 py-2 text-sm"
+                    placeholder="Target group ID"
+                    value={targetGroupId}
+                    onChange={(e) => setTargetGroupId(e.target.value)}
+                  />
+                )}
+                {shareDest === "conversation" && (
+                  <input
+                    className="w-full border rounded px-3 py-2 text-sm"
+                    placeholder="Target conversation ID"
+                    value={targetConversationId}
+                    onChange={(e) => setTargetConversationId(e.target.value)}
+                  />
+                )}
+                <Textarea
+                  placeholder="Add a caption (optional)"
+                  value={shareCaption}
+                  onChange={(e) => setShareCaption(e.target.value)}
+                  className="h-24"
+                />
+                <Button
+                  className="w-full bg-blue-500 text-white"
+                  disabled={shareMutation.isPending || (shareDest === "group" && !targetGroupId) || (shareDest === "conversation" && !targetConversationId)}
+                  onClick={() => shareMutation.mutateAsync()}
+                >
+                  {shareMutation.isPending ? "Sharing..." : "Share"}
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
           <button className="ml-auto text-gray-600 hover:text-gray-800">
             <Bookmark />
           </button>
