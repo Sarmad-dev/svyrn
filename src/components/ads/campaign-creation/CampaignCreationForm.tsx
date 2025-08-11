@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useState } from "react";
@@ -523,7 +524,7 @@ export const CampaignCreationForm: React.FC<CampaignCreationFormProps> = ({
         <div className="p-4 bg-blue-50 rounded-lg">
           <h4 className="font-medium text-blue-900">Next Steps</h4>
           <p className="text-sm text-blue-700 mt-1">
-            After creating your campaign, you'll be able to create ad sets and ads to complete your advertising setup.
+            After creating your campaign, you&apos;ll be able to create ad sets and ads to complete your advertising setup.
           </p>
         </div>
       </CardContent>

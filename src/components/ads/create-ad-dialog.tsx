@@ -113,7 +113,7 @@ export const CreateAd: React.FC<CreateAdDialogProps> = ({
                 Campaign Created Successfully!
               </h3>
               <p className="text-gray-600">
-                Your campaign "{createdCampaign?.name}" has been created. 
+                Your campaign &quot;{createdCampaign?.name}&quot; has been created. 
                 You can now create ad sets and ads to complete your advertising setup.
               </p>
               <div className="flex gap-3 justify-center">
