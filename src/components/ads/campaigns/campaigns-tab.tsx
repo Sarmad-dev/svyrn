@@ -17,9 +17,19 @@ type Campaign = {
 
 type CampaignsTabProps = {
   campaigns: Campaign[];
+  onRefresh: () => void;
+  onCreateAdSet: (campaignId: string) => void;
+  onCreateAd: (adSetId: string) => void;
+  onViewDetails: (campaignId: string) => void;
 };
 
-export default function CampaignsTab({ campaigns }: CampaignsTabProps) {
+export default function CampaignsTab({ 
+  campaigns, 
+  onRefresh, 
+  onCreateAdSet, 
+  onCreateAd, 
+  onViewDetails 
+}: CampaignsTabProps) {
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
@@ -29,7 +39,13 @@ export default function CampaignsTab({ campaigns }: CampaignsTabProps) {
         <button className="text-blue-500 text-sm">See less</button>
       </div>
       <Card className="p-0">
-        <CampaignsTable campaigns={campaigns} />
+        <CampaignsTable 
+          campaigns={campaigns} 
+          onRefresh={onRefresh}
+          onCreateAdSet={onCreateAdSet}
+          onCreateAd={onCreateAd}
+          onViewDetails={onViewDetails}
+        />
       </Card>
     </div>
   );

@@ -29,12 +29,20 @@ type DashboardTabProps = {
     spend: number;
     listedDate?: string | Date;
   }>;
+  onRefresh?: () => void;
+  onCreateAdSet?: (campaignId: string) => void;
+  onCreateAd?: (adSetId: string) => void;
+  onViewDetails?: (campaignId: string) => void;
 };
 
 export function DashboardTab({
   spending,
   stats,
   campaigns,
+  onRefresh,
+  onCreateAdSet,
+  onCreateAd,
+  onViewDetails,
 }: DashboardTabProps) {
   return (
     <div className="space-y-4">
@@ -81,7 +89,13 @@ export function DashboardTab({
 
       <div className="mt-4">
         <h3 className="text-lg font-semibold mb-2">Conversation over time</h3>
-        <CampaignsTable campaigns={campaigns} />
+        <CampaignsTable 
+          campaigns={campaigns} 
+          onRefresh={onRefresh || (() => {})}
+          onCreateAdSet={onCreateAdSet || (() => {})}
+          onCreateAd={onCreateAd || (() => {})}
+          onViewDetails={onViewDetails || (() => {})}
+        />
       </div>
     </div>
   );

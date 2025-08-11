@@ -12,12 +12,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarIcon, ChevronRight, Target, Users, Settings } from "lucide-react";
+import { CalendarIcon, ChevronRight, Target, Users, Settings, Upload, X } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
+import { toast } from "sonner";
 
 const campaignSchema = z.object({
   name: z.string().min(1, "Campaign name is required").max(100, "Campaign name cannot exceed 100 characters"),
+  image: z.string().optional(),
   objective: z.enum([
     "awareness", "reach", "traffic", "engagement", "app_installs",
     "video_views", "lead_generation", "messages", "conversions", "catalog_sales"
@@ -97,6 +100,7 @@ export const CampaignCreationForm: React.FC<CampaignCreationFormProps> = ({
   const [currentStep, setCurrentStep] = useState(1);
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const {
     register,
@@ -155,6 +159,28 @@ export const CampaignCreationForm: React.FC<CampaignCreationFormProps> = ({
     }
   };
 
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      try {
+        // Show preview immediately
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setImagePreview(reader.result as string);
+          // Store base64 data for backend
+          setValue("image", reader.result as string);
+        };
+        reader.readAsDataURL(file);
+      } catch (error) {
+        toast.error("Failed to load image preview.");
+        console.error("Image preview error:", error);
+      }
+    } else {
+      setImagePreview(null);
+      setValue("image", "");
+    }
+  };
+
   const renderStep1 = () => (
     <Card>
       <CardHeader>
@@ -177,6 +203,63 @@ export const CampaignCreationForm: React.FC<CampaignCreationFormProps> = ({
           {errors.name && (
             <p className="text-sm text-red-500">{errors.name.message}</p>
           )}
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="image">Campaign Image (Optional)</Label>
+          <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-gray-400 transition-colors">
+            <input
+              id="image"
+              type="file"
+              accept="image/*"
+              onChange={handleImageUpload}
+              className="hidden"
+            />
+            <label htmlFor="image" className="cursor-pointer">
+              {!imagePreview ? (
+                <div className="space-y-2">
+                  <Upload className="mx-auto h-12 w-12 text-gray-400" />
+                  <div className="text-sm text-gray-600">
+                    <span className="font-medium text-blue-600 hover:text-blue-500">
+                      Click to upload
+                    </span>{" "}
+                    or drag and drop
+                  </div>
+                  <p className="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <div className="relative inline-block">
+                    <Image
+                      src={imagePreview}
+                      alt="Campaign Image Preview"
+                      width={80}
+                      height={80}
+                      className="rounded-lg object-cover"
+                    />
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setImagePreview(null);
+                        setValue("image", "");
+                      }}
+                      className="absolute -top-2 -right-2 p-1 rounded-full bg-red-100 text-red-600 hover:bg-red-200"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                  <p className="text-xs text-gray-500">Click to change image</p>
+                </div>
+              )}
+            </label>
+          </div>
+          {errors.image && (
+            <p className="text-sm text-red-500">{errors.image.message}</p>
+          )}
+          <p className="text-xs text-muted-foreground">
+            Add a campaign image for better branding and recognition
+          </p>
         </div>
 
         <div className="space-y-2">
@@ -483,6 +566,21 @@ export const CampaignCreationForm: React.FC<CampaignCreationFormProps> = ({
             </div>
           </div>
 
+          {imagePreview && (
+            <div>
+              <h5 className="font-medium text-gray-700">Campaign Image</h5>
+              <div className="mt-2">
+                <Image
+                  src={imagePreview}
+                  alt="Campaign Image"
+                  width={80}
+                  height={80}
+                  className="rounded-lg object-cover"
+                />
+              </div>
+            </div>
+          )}
+
           <div className="grid grid-cols-2 gap-4">
             <div>
               <h5 className="font-medium text-gray-700">Budget</h5>
@@ -603,7 +701,7 @@ export const CampaignCreationForm: React.FC<CampaignCreationFormProps> = ({
             <Button
               type="button"
               onClick={nextStep}
-              disabled={!isValid}
+              // disabled={!isValid}
               className="flex items-center gap-2"
             >
               Next
@@ -612,7 +710,7 @@ export const CampaignCreationForm: React.FC<CampaignCreationFormProps> = ({
           ) : (
             <Button
               type="submit"
-              disabled={!isValid || isLoading}
+              // disabled={!isValid || isLoading}
               className="flex items-center gap-2"
             >
               {isLoading ? "Creating..." : "Create Campaign"}
