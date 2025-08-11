@@ -336,13 +336,13 @@ export const CreateAd: React.FC<CreateAdDialogProps> = ({
                   Congratulations! 🎉
                 </h3>
                 <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                  Your advertising campaign "{createdCampaign?.name}" has been successfully created with an ad set and ad. 
+                  Your advertising campaign &quot;{createdCampaign?.name}&quot; has been successfully created with an ad set and ad. 
                   Your campaign is now ready to reach your target audience.
                 </p>
               </div>
 
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 max-w-2xl mx-auto">
-                <h4 className="font-medium text-blue-900 mb-3">What's Next?</h4>
+                <h4 className="font-medium text-blue-900 mb-3">What&apos;s Next?</h4>
                 <div className="space-y-2 text-sm text-blue-800">
                   <p>• Your campaign will be reviewed and activated within 24 hours</p>
                   <p>• Monitor performance in the Campaign Manager</p>
