@@ -11,11 +11,15 @@ import CampaignsTab from "./campaigns/campaigns-tab";
 import { authClient } from "@/lib/auth-client";
 import { useQuery } from "@tanstack/react-query";
 import { getCampaigns } from "@/lib/actions/campaign.action";
-
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
+import { CreateAd } from "./create-ad-dialog";
 
 export default function AdsManagerTabs() {
   const { data: session } = authClient.useSession();
-  const { data: campaigns = [], isPending } = useQuery({
+  const [showCreateCampaign, setShowCreateCampaign] = useState(false);
+  
+  const { data: campaigns = [], isPending, refetch } = useQuery({
     queryKey: ["campaigns"],
     queryFn: async () => await getCampaigns({ token: session?.session.token as string }),
     enabled: !!session?.session.token,
@@ -161,70 +165,92 @@ export default function AdsManagerTabs() {
 
   const [tab, setTab] = useState<string>("dashboard");
 
+  const handleCampaignCreated = () => {
+    setShowCreateCampaign(false);
+    refetch(); // Refresh campaigns data
+  };
+
   return (
-    <Tabs value={tab} onValueChange={setTab} className="w-full mt-4 overflow-x-hidden">
-      <TabsList className="bg-[#f1f4f3] rounded-full w-full flex h-[48px] justify-start gap-2 p-1 overflow-x-auto whitespace-nowrap no-scrollbar">
-        <TabsTrigger
-          value="dashboard"
-          className="px-3 md:px-4 py-2 rounded-full data-[state=active]:bg-[#4dabf7] data-[state=active]:text-white inline-flex items-center gap-2"
-        >
-          <Image src="/icons/home.svg" alt="Dashboard" width={18} height={18} className={tab === "dashboard" ? "invert" : ""} />
-          <span className="hidden md:inline">Dashboard</span>
-        </TabsTrigger>
-        <TabsTrigger
-          value="campaigns"
-          className="px-3 md:px-4 py-2 rounded-full data-[state=active]:bg-[#4dabf7] data-[state=active]:text-white inline-flex items-center gap-2"
-        >
-          <Image src={tab === "campaigns" ? "/icons/ad-icon-white.svg" : "/icons/ad-icon.svg"} alt="Campaigns" width={18} height={18} />
-          <span className="hidden md:inline">My Campaigns</span>
-        </TabsTrigger>
-        <TabsTrigger
-          value="performance"
-          className="px-3 md:px-4 py-2 rounded-full data-[state=active]:bg-[#4dabf7] data-[state=active]:text-white inline-flex items-center gap-2"
-        >
-          <Image src="/icons/work-case.svg" alt="Performance" width={18} height={18} className={tab === "performance" ? "invert" : ""} />
-          <span className="hidden md:inline">Performance</span>
-        </TabsTrigger>
-        <TabsTrigger
-          value="audience"
-          className="px-3 md:px-4 py-2 rounded-full data-[state=active]:bg-[#4dabf7] data-[state=active]:text-white inline-flex items-center gap-2"
-        >
-          <Image src="/icons/heart.svg" alt="Audience" width={18} height={18} className={tab === "audience" ? "invert" : ""} />
-          <span className="hidden md:inline">Audience</span>
-        </TabsTrigger>
-      </TabsList>
+    <>
+      <Tabs value={tab} onValueChange={setTab} className="w-full mt-4 overflow-x-hidden">
+        <TabsList className="bg-[#f1f4f3] rounded-full w-full flex h-[48px] justify-start gap-2 p-1 overflow-x-auto whitespace-nowrap no-scrollbar">
+          <TabsTrigger
+            value="dashboard"
+            className="px-3 md:px-4 py-2 rounded-full data-[state=active]:bg-[#4dabf7] data-[state=active]:text-white inline-flex items-center gap-2"
+          >
+            <Image src="/icons/home.svg" alt="Dashboard" width={18} height={18} className={tab === "dashboard" ? "invert" : ""} />
+            <span className="hidden md:inline">Dashboard</span>
+          </TabsTrigger>
+          <TabsTrigger
+            value="campaigns"
+            className="px-3 md:px-4 py-2 rounded-full data-[state=active]:bg-[#4dabf7] data-[state=active]:text-white inline-flex items-center gap-2"
+          >
+            <Image src={tab === "campaigns" ? "/icons/ad-icon-white.svg" : "/icons/ad-icon.svg"} alt="Campaigns" width={18} height={18} />
+            <span className="hidden md:inline">My Campaigns</span>
+          </TabsTrigger>
+          <TabsTrigger
+            value="performance"
+            className="px-3 md:px-4 py-2 rounded-full data-[state=active]:bg-[#4dabf7] data-[state=active]:text-white inline-flex items-center gap-2"
+          >
+            <Image src="/icons/work-case.svg" alt="Performance" width={18} height={18} className={tab === "performance" ? "invert" : ""} />
+            <span className="hidden md:inline">Performance</span>
+          </TabsTrigger>
+          <TabsTrigger
+            value="audience"
+            className="px-3 md:px-4 py-2 rounded-full data-[state=active]:bg-[#4dabf7] data-[state=active]:text-white inline-flex items-center gap-2"
+          >
+            <Image src="/icons/heart.svg" alt="Audience" width={18} height={18} className={tab === "audience" ? "invert" : ""} />
+            <span className="hidden md:inline">Audience</span>
+          </TabsTrigger>
+        </TabsList>
 
-      <TabsContent value="dashboard" className="mt-4">
-        {!isPending ? (
-          <DashboardTab spending={spendingData} stats={dashboardStats} campaigns={campaignsRows} />
-        ) : (
-          <div className="p-6 text-sm text-muted-foreground">Loading dashboard...</div>
-        )}
-      </TabsContent>
+        <TabsContent value="dashboard" className="mt-4">
+          {!isPending ? (
+            <DashboardTab spending={spendingData} stats={dashboardStats} campaigns={campaignsRows} />
+          ) : (
+            <div className="p-6 text-sm text-muted-foreground">Loading dashboard...</div>
+          )}
+        </TabsContent>
 
-      <TabsContent value="campaigns" className="mt-4">
-        {!isPending ? (
-          <CampaignsTab campaigns={campaignsRows} />
-        ) : (
-          <div className="p-6 text-sm text-muted-foreground">Loading campaigns...</div>
-        )}
-      </TabsContent>
+        <TabsContent value="campaigns" className="mt-4">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-semibold">Campaigns</h3>
+            <Button
+              onClick={() => setShowCreateCampaign(true)}
+              className="bg-blue-600 hover:bg-blue-700 text-white"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Create Campaign
+            </Button>
+          </div>
+          {!isPending ? (
+            <CampaignsTab campaigns={campaignsRows} />
+          ) : (
+            <div className="p-6 text-sm text-muted-foreground">Loading campaigns...</div>
+          )}
+        </TabsContent>
 
-      <TabsContent value="performance" className="mt-4">
-        {!isPending ? (
-          <PerformanceTab trend={trend} publisherStats={publisherStats} topPerformers={topPerformers} />
-        ) : (
-          <div className="p-6 text-sm text-muted-foreground">Loading performance...</div>
-        )}
-      </TabsContent>
+        <TabsContent value="performance" className="mt-4">
+          {!isPending ? (
+            <PerformanceTab trend={trend} publisherStats={publisherStats} topPerformers={topPerformers} />
+          ) : (
+            <div className="p-6 text-sm text-muted-foreground">Loading performance...</div>
+          )}
+        </TabsContent>
 
-      <TabsContent value="audience" className="mt-4">
-        {!isPending ? (
-          <AudienceTab traffic={traffic} composition={composition} demographics={demographics} />
-        ) : (
-          <div className="p-6 text-sm text-muted-foreground">Loading audience...</div>
-        )}
-      </TabsContent>
-    </Tabs>
+        <TabsContent value="audience" className="mt-4">
+          {!isPending ? (
+            <AudienceTab traffic={traffic} composition={composition} demographics={demographics} />
+          ) : (
+            <div className="p-6 text-sm text-muted-foreground">Loading audience...</div>
+          )}
+        </TabsContent>
+      </Tabs>
+
+      <CreateAd
+        isOpen={showCreateCampaign}
+        onClose={handleCampaignCreated}
+      />
+    </>
   );
 }

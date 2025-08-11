@@ -25,10 +25,10 @@ export const createCampaign = async <T>({ token, data }: CreateCampaignArgs<T>) 
       throw new Error(response?.message || "Failed to create campaign");
     }
 
-    toast.success(response.message || "Campaign created");
+    toast.success(response.message || "Campaign created successfully");
     return response.data as { campaign: any; totalCost: number; nextStep?: string };
   } catch (error) {
-    console.error(error);
+    console.error("Campaign creation error:", error);
     throw error;
   }
 };
@@ -64,7 +64,7 @@ export const processCampaignPayment = async ({
       campaign: { id: string; status: string; paymentStatus: string };
     };
   } catch (error) {
-    console.error(error);
+    console.error("Payment error:", error);
     throw error;
   }
 };
@@ -87,7 +87,7 @@ export const getCampaigns = async ({ token }: { token: string }) => {
 
     return response.data.campaigns as any[];
   } catch (error) {
-    console.error(error);
+    console.error("Get campaigns error:", error);
     throw error;
   }
 };
@@ -118,7 +118,7 @@ export const getCampaignAnalytics = async ({
 
     return response.data;
   } catch (error) {
-    console.error(error);
+    console.error("Get analytics error:", error);
     throw error;
   }
 };
