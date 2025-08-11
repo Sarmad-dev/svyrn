@@ -41,7 +41,7 @@ const Home = () => {
       const result = await getPosts({
         token: token as string,
         cursor: pageParam,
-        limit: 1,
+        limit: 10,
         includeAds: true,
       });
       console.log('[DEBUG] queryFn result:', result);

@@ -1,13 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useCallback, useEffect, useRef, useState } from "react";
-import {
-  X,
-  Heart,
-  MessageCircle,
-  Send,
-  ChevronUp,
-  Eye,
-} from "lucide-react";
+import { X, Heart, MessageCircle, Send, ChevronUp, Eye } from "lucide-react";
 import Image from "next/image";
 import { authClient } from "@/lib/auth-client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -20,6 +13,7 @@ import {
   SheetTrigger,
 } from "../ui/sheet";
 import { Textarea } from "../ui/textarea";
+import { config } from "@/lib/config";
 
 type Story = {
   id: string | number;
@@ -48,6 +42,7 @@ const reactionEmojis = [
 ];
 
 export const StoryViewer = ({ stories, onClose }: Props) => {
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(20000); // default 20s
@@ -58,24 +53,42 @@ export const StoryViewer = ({ stories, onClose }: Props) => {
   const queryClient = useQueryClient();
 
   const { data: sessionData } = authClient.useSession();
+
   const currentStory = stories[currentIndex];
   const isOwnStory = currentStory?.authorId === sessionData?.user.id;
 
   // Fetch story interactions (for own stories)
   const { data: interactions } = useQuery({
-    queryKey: ["storyInteractions", currentStory.storyId],
+    queryKey: ["storyInteractions", currentStory?.storyId],
     queryFn: async () => {
-      if (!isOwnStory || !currentStory.storyId) return null;
+      if (!isOwnStory || !currentStory?.storyId) {
+        console.log("[DEBUG] Story interactions query disabled:", {
+          isOwnStory,
+          storyId: currentStory?.storyId,
+        });
+        return null;
+      }
+
+      console.log(
+        "[DEBUG] Fetching story interactions for:",
+        currentStory.storyId
+      );
+
       const response = await fetch(
-        `/api/stories/${currentStory.storyId}/interactions`,
+        `${config.apiUrl}/api/stories/${currentStory.storyId}/interactions`,
         {
           headers: { Authorization: `Bearer ${sessionData?.session.token}` },
         }
       );
       if (response.ok) {
         const data = await response.json();
+        console.log("[DEBUG] Story interactions response:", data);
         return data.data;
       }
+      console.log(
+        "[DEBUG] Story interactions response not ok:",
+        response.status
+      );
       return null;
     },
     enabled:
@@ -85,8 +98,12 @@ export const StoryViewer = ({ stories, onClose }: Props) => {
   // React to story mutation
   const reactMutation = useMutation({
     mutationFn: async (reactionType: string) => {
-              const response = await fetch(
-          `/api/stories/${currentStory?.storyId}/react`,
+      if (!currentStory?.storyId) {
+        throw new Error("Story ID is required");
+      }
+
+      const response = await fetch(
+        `${config.apiUrl}/api/stories/${currentStory.storyId}/react`,
         {
           method: "POST",
           headers: {
@@ -108,8 +125,12 @@ export const StoryViewer = ({ stories, onClose }: Props) => {
   // Comment on story mutation
   const commentMutation = useMutation({
     mutationFn: async (text: string) => {
-              const response = await fetch(
-          `/api/stories/${currentStory?.storyId}/comment`,
+      if (!currentStory?.storyId) {
+        throw new Error("Story ID is required");
+      }
+
+      const response = await fetch(
+        `${config.apiUrl}/api/stories/${currentStory.storyId}/comment`,
         {
           method: "POST",
           headers: {
@@ -136,7 +157,6 @@ export const StoryViewer = ({ stories, onClose }: Props) => {
     }
     setProgress(0);
   }, [currentStory]);
-
 
   const handleNext = useCallback(() => {
     if (currentIndex < stories.length - 1) {
@@ -198,21 +218,67 @@ export const StoryViewer = ({ stories, onClose }: Props) => {
   };
 
   const handleReaction = (reactionType: string) => {
+    console.log("[DEBUG] handleReaction called:", {
+      reactionType,
+      currentStory,
+    });
+
     if (!isOwnStory) {
+      if (!currentStory?.storyId) {
+        console.error("[DEBUG] Cannot react: storyId is missing", currentStory);
+        return;
+      }
       reactMutation.mutate(reactionType);
     }
   };
 
   const handleComment = () => {
+    console.log("[DEBUG] handleComment called:", { commentText, currentStory });
+
     if (commentText.trim() && !isOwnStory) {
+      if (!currentStory?.storyId) {
+        console.error(
+          "[DEBUG] Cannot comment: storyId is missing",
+          currentStory
+        );
+        return;
+      }
       commentMutation.mutate(commentText.trim());
     }
   };
 
-    // Early return if currentStory is undefined (after all hooks)
-    if (!currentStory) {
-      return null;
-    }
+  
+  // Early return if currentStory is undefined
+  if (!currentStory) {
+    console.log("[DEBUG] Early return - currentStory is undefined:", {
+      currentIndex,
+      stories,
+    });
+    return null;
+  }
+
+  // Validate currentStory has required fields
+  if (!currentStory.storyId || !currentStory.type || !currentStory.url) {
+    console.error(
+      "[DEBUG] currentStory missing required fields:",
+      currentStory
+    );
+    return null;
+  }
+
+  // Validate currentIndex
+  if (currentIndex < 0 || currentIndex > stories.length) {
+    console.error("[DEBUG] Invalid currentIndex:", {
+      currentIndex,
+      storiesLength: stories.length,
+    });
+    return null;
+  }
+
+  // Early return if currentStory is undefined (after all hooks)
+  if (!currentStory) {
+    return null;
+  }
 
   return (
     <div className="fixed inset-0 bg-black z-50 flex flex-col items-center justify-center overflow-hidden">
@@ -245,14 +311,16 @@ export const StoryViewer = ({ stories, onClose }: Props) => {
           <div className="flex items-center gap-3 text-white">
             <div className="relative w-10 h-10 rounded-full border-2 border-white/50">
               <Image
-                src={currentStory?.avatarUrl || '/images/user.png'}
-                alt={currentStory?.name || 'User'}
+                src={currentStory?.avatarUrl || "/images/user.png"}
+                alt={currentStory?.name || "User"}
                 className="rounded-full object-cover"
                 fill
               />
             </div>
             <div>
-              <span className="text-sm font-semibold">{currentStory?.name}</span>
+              <span className="text-sm font-semibold">
+                {currentStory?.name}
+              </span>
               <div className="text-xs text-white/80">2h ago</div>
             </div>
           </div>
@@ -270,12 +338,12 @@ export const StoryViewer = ({ stories, onClose }: Props) => {
               </div>
             )}
 
-      <button
-        onClick={onClose}
+            <button
+              onClick={onClose}
               className="text-white hover:text-gray-300 p-2"
             >
-        <X className="w-6 h-6" />
-      </button>
+              <X className="w-6 h-6" />
+            </button>
           </div>
         </div>
       </div>
@@ -285,27 +353,27 @@ export const StoryViewer = ({ stories, onClose }: Props) => {
         className="flex-1 flex items-center justify-center w-full relative"
         onClick={handleTap}
       >
-      {/* Media */}
+        {/* Media */}
         {currentStory?.type === "image" ? (
           <div className="h-[70vh] max-md:h-[60vh] max-md:w-[calc(100vw-40px)] w-[400px] relative rounded-2xl overflow-hidden">
             <Image
-              src={currentStory?.url || ''}
+              src={currentStory?.url || ""}
               alt="story"
               fill
               className="object-cover"
               priority
             />
-        </div>
-      ) : (
-                  <video
+          </div>
+        ) : (
+          <video
             ref={videoRef}
             key={currentStory?.id}
             src={currentStory?.url}
-          autoPlay
-          muted
-          playsInline
-          onLoadedMetadata={handleVideoMetadata}
-          onEnded={handleNext}
+            autoPlay
+            muted
+            playsInline
+            onLoadedMetadata={handleVideoMetadata}
+            onEnded={handleNext}
             className="max-h-[70vh] h-[70vh] max-w-full w-[400px] max-md:w-[calc(100vw-40px)] object-cover rounded-2xl"
           />
         )}

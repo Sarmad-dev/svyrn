@@ -54,7 +54,9 @@ export const StoryPreview = ({ user }: { user: User }) => {
   };
 
   const formatStoryData = (story: any) => {
-    return story.stories.flatMap((str: any) =>
+    console.log('[DEBUG] formatStoryData input:', story);
+    
+    const formattedData = story.stories.flatMap((str: any) =>
       str.content.media.map((media: any, index: number) => ({
         id: `${story.author._id}-${str._id}-${index}`,
         type: media.type,
@@ -69,6 +71,9 @@ export const StoryPreview = ({ user }: { user: User }) => {
         authorId: story.author._id,
       }))
     );
+    
+    console.log('[DEBUG] formatStoryData output:', formattedData);
+    return formattedData;
   };
 
   return (
@@ -118,7 +123,9 @@ export const StoryPreview = ({ user }: { user: User }) => {
                   key={story.author._id}
                   className="flex-shrink-0 snap-start cursor-pointer group"
                   onClick={() => {
+                    console.log('[DEBUG] Story clicked:', story);
                     const storyData = formatStoryData(story);
+                    console.log('[DEBUG] Setting selectedStory:', storyData);
                     setSelectedStory(storyData);
                   }}
                 >
