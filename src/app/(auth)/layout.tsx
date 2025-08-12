@@ -25,7 +25,9 @@ const AuthLayout = ({ children }: AuthProps) => {
         <div className="w-full flex-1 flex items-center justify-center">
           {children}
         </div>
+        <div className="h-[70px]">
         <AuthBottomSheet />
+        </div>
       </div>
     </main>
   );
