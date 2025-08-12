@@ -37,7 +37,7 @@ const CreatePageForm = () => {
   const { mutateAsync, isPending } = useMutation({
     mutationKey: ["create-page"],
     mutationFn: async (data: z.infer<typeof createPageSchema>) =>
-      await createPage({ token: session?.session.token as string, data }),
+      await createPage({ token: session?.session.token as string, ...data }),
   });
 
   const onSubmit = async (data: z.infer<typeof createPageSchema>) => {
