@@ -64,7 +64,7 @@ export default function AdsManagerTabs() {
   const campaignsRows = campaigns.map((c: any) => ({
     _id: c._id,
     title: c.name,
-    image: c.image || "/images/placeholder.png",
+    image: c.image,
     impressions: c?.performance?.impressions || 0,
     clicks: c?.performance?.clicks || 0,
     cpc: c?.performance?.cpc || 0,

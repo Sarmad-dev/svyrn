@@ -21,7 +21,7 @@ const AuthLayout = ({ children }: AuthProps) => {
         </div>
         {children}
       </div>
-      <div className="md:hidden flex flex-col w-full">
+      <div className="md:hidden flex flex-col h-screen w-full">
         <div className="w-full flex-1 flex items-center justify-center">
           {children}
         </div>

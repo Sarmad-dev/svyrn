@@ -88,7 +88,7 @@ export function DashboardTab({
       <SpendingChartCard data={spending} />
 
       <div className="mt-4">
-        <h3 className="text-lg font-semibold mb-2">Conversation over time</h3>
+        <h3 className="text-lg font-semibold mb-2">Conversions over time</h3>
         <CampaignsTable 
           campaigns={campaigns} 
           onRefresh={onRefresh || (() => {})}
