@@ -180,3 +180,65 @@ export type Message = {
 };
 
 export type MessageList = Message[];
+
+// Reel types
+export interface Reel {
+  _id: string;
+  author: Author;
+  media: {
+    type: 'image' | 'video';
+    url: string;
+    thumbnail?: string;
+    duration?: number;
+    size?: number;
+    dimensions?: {
+      width: number;
+      height: number;
+    };
+  };
+  caption?: string;
+  
+  privacy: 'public' | 'friends' | 'private' | 'followers';
+  location?: string;
+  tags: string[];
+  hashtags: string[];
+  mentions: string[];
+  reactions: Reaction[];
+  comments: ReelComment[];
+  shares: number;
+  saves: number;
+  views: number;
+  trending: {
+    score: number;
+    rank?: number;
+    category?: string;
+  };
+  isActive: boolean;
+  isArchived: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface ReelComment {
+  _id: string;
+  reel: string;
+  author: Author;
+  content: string;
+  parentComment?: string;
+  replies: ReelComment[];
+  reactions: Reaction[];
+  mentions: string[];
+  hashtags: string[];
+  isEdited: boolean;
+  editHistory: {
+    content: string;
+    editedAt: Date;
+  }[];
+  moderationStatus: 'pending' | 'approved' | 'rejected' | 'flagged';
+  isHidden: boolean;
+  isPinned: boolean;
+  isSpam: boolean;
+  spamScore: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
