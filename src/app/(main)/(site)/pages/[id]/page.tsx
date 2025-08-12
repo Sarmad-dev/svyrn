@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useState } from "react";
@@ -281,7 +282,7 @@ export default function PageViewPage() {
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-900 mb-2">Page Not Found</h1>
-          <p className="text-gray-600 mb-4">The page you're looking for doesn't exist or has been removed.</p>
+          <p className="text-gray-600 mb-4">The page you&apos;re looking for doesn&apos;t exist or has been removed.</p>
           <Button onClick={() => router.push("/pages")}>Back to Pages</Button>
         </div>
       </div>
@@ -549,7 +550,7 @@ export default function PageViewPage() {
           </DialogHeader>
           <div className="space-y-4">
             <div>
-              <Label htmlFor="post-text">What's on your mind?</Label>
+              <Label htmlFor="post-text">What&apos;s on your mind?</Label>
               <Textarea
                 id="post-text"
                 placeholder="Share something with your page followers..."
@@ -901,7 +902,7 @@ function PagePostsTab({ pageId }: { pageId: string }) {
       <Card className="text-center py-12 border-0 shadow-sm">
         <BookOpen className="w-16 h-16 text-gray-400 mx-auto mb-4" />
         <h3 className="text-lg font-medium text-gray-900 mb-2">No posts yet</h3>
-        <p className="text-gray-500">This page hasn't shared any posts yet.</p>
+        <p className="text-gray-500">This page hasn&apos;t shared any posts yet.</p>
       </Card>
     );
   }

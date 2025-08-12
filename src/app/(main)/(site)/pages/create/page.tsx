@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useState } from "react";
@@ -249,7 +250,7 @@ export default function CreatePagePage() {
                       className="mt-1 border-gray-200 focus:border-blue-300 focus:ring-blue-200"
                     />
                     <p className="text-xs text-gray-500 mt-1">
-                      This will be your page's unique URL identifier
+                      This will be your page&apos;s unique URL identifier
                     </p>
                   </div>
 

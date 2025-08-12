@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from "react";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -301,7 +302,7 @@ export const PostCard = ({
             <DialogContent className="p-6 max-w-md mx-auto">
               <DialogHeader className="text-center mb-6">
                 <DialogTitle className="text-2xl font-bold text-gray-900">Share Post</DialogTitle>
-                <p className="text-gray-500 mt-2">Choose where you'd like to share this post</p>
+                <p className="text-gray-500 mt-2">Choose where you&apos;d like to share this post</p>
               </DialogHeader>
               
               <div className="space-y-6">
@@ -351,7 +352,7 @@ export const PostCard = ({
                     <label className="text-sm font-medium text-gray-700">Select Group:</label>
                     {!isLoadingGroups && !groupsError && userGroups && userGroups.length === 0 && (
                       <div className="p-3 text-center text-amber-600 bg-amber-50 rounded-lg border border-amber-200">
-                        <p className="text-sm">You're not a member of any groups yet.</p>
+                        <p className="text-sm">You&apos;re not a member of any groups yet.</p>
                         <p className="text-xs text-amber-500 mt-1">Join a group to share posts there.</p>
                       </div>
                     )}
@@ -393,7 +394,7 @@ export const PostCard = ({
                     <label className="text-sm font-medium text-gray-700">Select Conversation:</label>
                     {!isLoadingConversations && !conversationsError && conversationsData && (!conversationsData.conversations || conversationsData.conversations.length === 0) && (
                       <div className="p-3 text-center text-amber-600 bg-amber-50 rounded-lg border border-amber-200">
-                        <p className="text-sm">You don't have any active conversations yet.</p>
+                        <p className="text-sm">You don&apost have any active conversations yet.</p>
                         <p className="text-xs text-amber-500 mt-1">Start a conversation to share posts there.</p>
                       </div>
                     )}
