@@ -86,12 +86,24 @@ const Home = () => {
   });
 
   // Set up infinite scroll
-  const { loadingRef } = useInfiniteScroll({
-    hasNextPage: !!hasNextPage,
-    isFetchingNextPage,
-    fetchNextPage,
-    threshold: 500, // Start loading 500px before the bottom
-  });
+  const loadingRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
+          fetchNextPage();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (loadingRef.current) {
+      observer.observe(loadingRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   // Flatten posts from all pages
   const allPosts = useMemo(() => {
