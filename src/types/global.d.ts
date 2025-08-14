@@ -61,7 +61,11 @@ interface Comment {
 }
 
 type Reaction = {
-  user: string;
+  user: {
+    _id: string;
+    name: string;
+    profilePicture: string;
+  };
   type: "like" | "love" | "haha" | "wow" | "sad" | "angry";
   createdAt: Date;
 };
@@ -197,6 +201,7 @@ export interface Reel {
     };
   };
   caption?: string;
+  commentCount: number;
   
   privacy: 'public' | 'friends' | 'private' | 'followers';
   location?: string;
@@ -206,7 +211,14 @@ export interface Reel {
   reactions: Reaction[];
   comments: ReelComment[];
   shares: number;
-  saves: number;
+  saves: {
+    user: {
+      _id: string;
+      name: string;
+      profilePicture: string;
+    };
+    savedAt: Date;
+  }[];
   views: number;
   trending: {
     score: number;

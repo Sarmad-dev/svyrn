@@ -39,7 +39,6 @@ export function FullscreenReelsViewer({
 }: FullscreenReelsViewerProps) {
   const [currentIndex, setCurrentIndex] = useState(initialReelIndex);
   const [isPlaying, setIsPlaying] = useState(true);
-  const [isMuted, setIsMuted] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [isCommentsOpen, setIsCommentsOpen] = useState(false);
@@ -49,11 +48,13 @@ export function FullscreenReelsViewer({
 
   const currentReel = localReels[currentIndex];
 
+  console.log("Current reel", currentReel);
+
   // Check if current user has liked/saved the reel
   useEffect(() => {
     if (currentReel) {
-      setIsLiked(currentReel.reactions.some((r) => r.user === currentUser.id));
-      setIsSaved(currentReel.saves > 0); // This should be updated with actual save status
+      setIsLiked(currentReel.reactions.some((r) => r.user._id === currentUser.id));
+      setIsSaved(currentReel.saves.some((s) => s.user._id === currentUser.id)); // This should be updated with actual save status
     }
   }, [currentReel, currentUser.id]);
 
@@ -216,8 +217,8 @@ export function FullscreenReelsViewer({
             ? {
                 ...reel,
                 saves: result.isSaved
-                  ? reel.saves + 1
-                  : Math.max(0, reel.saves - 1),
+                  ? [...reel.saves, { user: currentUser.id, savedAt: new Date() }]
+                  : reel.saves.filter((s) => s.user._id !== currentUser.id),
               }
             : reel
         )
@@ -265,35 +266,6 @@ export function FullscreenReelsViewer({
             >
               <X size={24} />
             </Button>
-
-            <div className="flex items-center gap-2 text-white">
-              <span className="text-sm font-medium">
-                {currentIndex + 1} / {localReels.length}
-              </span>
-            </div>
-
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-white hover:bg-white/20 rounded-full"
-            >
-              <MoreHorizontal size={24} />
-            </Button>
-          </div>
-        </div>
-
-        {/* Progress Indicators */}
-        <div className="absolute top-20 left-1/2 -translate-x-1/2 z-20">
-          <div className="flex gap-2">
-            {localReels.map((_, index) => (
-              <div
-                key={index}
-                className={cn(
-                  "w-2 h-2 rounded-full transition-all duration-300",
-                  index === currentIndex ? "bg-white" : "bg-white/30"
-                )}
-              />
-            ))}
           </div>
         </div>
 
@@ -315,19 +287,20 @@ export function FullscreenReelsViewer({
                 />
               </div>
             ) : (
-              <video
-                ref={videoRef}
-                src={currentReel.media.url}
-                className="w-full md:w-[600px] h-full object-cover"
-                loop
-                playsInline
-                muted={isMuted}
-                onEnded={handleVideoEnded}
-              />
+              <div className="w-screen sm:w-[600px] h-screen">
+                <video
+                  ref={videoRef}
+                  src={currentReel.media.url}
+                  className="object-cover h-screen"
+                  loop
+                  playsInline
+                  onEnded={handleVideoEnded}
+                />
+              </div>
             )}
 
             {/* Overlay Content */}
-            <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent">
+            <div className="absolute bottom-0 left-0 right-0 p-6">
               {/* User Info */}
               <div className="flex items-center gap-3 mb-4">
                 <Avatar className="w-10 h-10 border-2 border-white">
@@ -349,7 +322,7 @@ export function FullscreenReelsViewer({
                 <Button
                   variant="outline"
                   size="sm"
-                  className="text-white border-white hover:bg-white hover:text-black rounded-full"
+                  className="text-white border-white bg-transparent hover:bg-transparent cursor-pointer hover:text-white hover:transition-all hover:scale-110 rounded-full"
                 >
                   Follow
                 </Button>
@@ -380,56 +353,62 @@ export function FullscreenReelsViewer({
 
           {/* Right Side Actions */}
           <div className="absolute right-4 bottom-20 z-20 flex flex-col items-center gap-6">
+            <div className="flex flex-col">
+              <Button
+                onClick={handleLike}
+                className={cn(
+                  "text-white p-0 size-12 bg-transparent hover:bg-transparent hover:scale-110 hover:transition-all hover:text-red-500 transition-all duration-200 cursor-pointer",
+                  isLiked && "text-red-500 scale-110"
+                )}
+              >
+                <Heart
+                  fill={isLiked ? "red" : "none"}
+                  className="size-full hover:transition-all hover:scale-110"
+                />
+              </Button>
+
+              <div className="text-center text-white text-sm">
+                <p className="font-semibold">{currentReel.reactions.length}</p>
+              </div>
+            </div>
+
+            <div className="flex flex-col">
+              <Button
+                onClick={handleComment}
+                className="text-white p-0 size-12 hover:bg-transparent bg-transparent cursor-pointer hover:scale-110 hover:transition-all rounded-full transition-all duration-200"
+              >
+                <MessageCircle
+                  color="white"
+                  className="size-full hover:transition-all hover:scale-110"
+                />
+              </Button>
+
+              <div className="text-center text-white text-sm">
+                <p className="font-semibold">{currentReel.commentCount || 0}</p>
+              </div>
+            </div>
+
             <Button
-              size="icon"
-              onClick={handleLike}
-              className={cn(
-                "text-white bg-transparent hover:bg-transparent rounded-full hover:scale-110 hover:transition-all hover:text-red-500 transition-all duration-200 cursor-pointer",
-                isLiked && "text-red-500 scale-110"
-              )}
+              onClick={handleShare}
+              className="text-white p-0 size-12 hover:bg-transparent bg-transparent cursor-pointer hover:scale-110 hover:transition-all rounded-full transition-all duration-200"
             >
-              <Heart
-                size={28}
-                fill={isLiked ? "red" : "none"}
-                className="hover:transition-all hover:scale-110"
+              <Share2
+                color="white"
+                className="size-full hover:transition-all hover:scale-110"
               />
             </Button>
 
-            <div className="text-center text-white text-sm">
-              <p className="font-semibold">{currentReel.reactions.length}</p>
-            </div>
-
             <Button
-              size="icon"
-              onClick={handleComment}
-              className="text-white hover:bg-transparent bg-transparent cursor-pointer hover:scale-110 hover:transition-all rounded-full transition-all duration-200"
-            >
-              <MessageCircle size={28} />
-            </Button>
-
-            <div className="text-center text-white text-sm">
-              <p className="font-semibold">{currentReel.comments.length}</p>
-            </div>
-
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleShare}
-              className="text-white hover:bg-white/20 rounded-full transition-all duration-200"
-            >
-              <Share2 size={28} />
-            </Button>
-
-            <Button
-              variant="ghost"
-              size="icon"
               onClick={handleSave}
               className={cn(
-                "text-white hover:bg-white/20 rounded-full transition-all duration-200",
+                "text-white p-0 size-12 hover:bg-transparent bg-transparent cursor-pointer hover:scale-110 hover:transition-all rounded-full transition-all duration-200",
                 isSaved && "text-yellow-400 scale-110"
               )}
             >
-              <Bookmark size={28} fill={isSaved ? "currentColor" : "none"} />
+              <Bookmark
+                className="size-full hover:transition-all hover:scale-110"
+                fill={isSaved ? "yellow" : "none"}
+              />
             </Button>
           </div>
 

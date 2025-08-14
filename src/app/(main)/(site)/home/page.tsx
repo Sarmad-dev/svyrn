@@ -4,12 +4,15 @@ import HomeProfileHeader from "@/components/home-profile-header";
 import { PostCard } from "@/components/post-card";
 import { PostCardSkeleton } from "@/components/post/post-card-skeleton";
 import { StoryPreview } from "@/components/story/story-preview";
-import { ReelsSection, FullscreenReelsViewer, CreateReelDialog } from "@/components/reels";
+import {
+  ReelsSection,
+  FullscreenReelsViewer,
+  CreateReelDialog,
+} from "@/components/reels";
 import { getPosts } from "@/lib/actions/post.action";
 import { getTrendingReels } from "@/lib/actions/reel.action";
 import { getMe } from "@/lib/actions/user.action";
 import { authClient } from "@/lib/auth-client";
-import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import { Post, User, Reel } from "@/types/global";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { InfiniteScrollLoader } from "@/components/ui/infinite-scroll-loader";
@@ -22,7 +25,9 @@ const Home = () => {
   const token = session?.session.token;
 
   // State for reels
-  const [selectedReelIndex, setSelectedReelIndex] = useState<number | null>(null);
+  const [selectedReelIndex, setSelectedReelIndex] = useState<number | null>(
+    null
+  );
   const [isCreateReelOpen, setIsCreateReelOpen] = useState(false);
 
   // Get user data with a separate query for better performance
@@ -34,7 +39,7 @@ const Home = () => {
   });
 
   // Get trending reels
-  const { data: reelsData, isLoading: isReelsLoading, refetch: refetchReels } = useQuery({
+  const { data: reelsData, refetch: refetchReels } = useQuery({
     queryKey: ["trending-reels"],
     queryFn: async () => await getTrendingReels(token as string, { limit: 10 }),
     enabled: !!token,
@@ -53,28 +58,19 @@ const Home = () => {
   } = useInfiniteQuery({
     queryKey: ["infinite-posts"],
     queryFn: async ({ pageParam }) => {
-      console.log('[DEBUG] queryFn called with pageParam:', pageParam);
       const result = await getPosts({
         token: token as string,
         cursor: pageParam,
         limit: 10,
         includeAds: true,
       });
-      console.log('[DEBUG] queryFn result:', result);
       return result;
     },
     initialPageParam: undefined as string | undefined,
     getNextPageParam: (lastPage) => {
       const hasNext = lastPage?.pagination?.hasNextPage;
       const cursor = lastPage?.pagination?.nextCursor;
-      
-      console.log('[DEBUG] getNextPageParam:', {
-        hasNextPage: hasNext,
-        nextCursor: cursor,
-        postsCount: lastPage?.posts?.length,
-        willReturnCursor: hasNext ? cursor : undefined
-      });
-      
+
       return hasNext ? cursor : undefined;
     },
     enabled: !!token,
@@ -107,31 +103,21 @@ const Home = () => {
 
   // Flatten posts from all pages
   const allPosts = useMemo(() => {
-    console.log('[DEBUG] Raw postsData:', postsData);
-    console.log('[DEBUG] postsData.pages:', postsData?.pages);
-    
-    if (postsData?.pages) {
-      postsData.pages.forEach((page, index) => {
-        console.log(`[DEBUG] Page ${index}:`, {
-          fullPage: page,
-          posts: page?.posts,
-          postsLength: page?.posts?.length,
-          pagination: page?.pagination
-        });
-      });
-    }
-    
-    const flattened = postsData?.pages?.flatMap((page) => page?.posts || []) || [];
-    
+    const flattened =
+      postsData?.pages?.flatMap((page) => page?.posts || []) || [];
+
     // Filter out ads to only show posts for debugging
-    const postsOnly = flattened.filter((item: any) => !item.itemType || item.itemType === 'post');
-    
+    const postsOnly = flattened.filter(
+      (item: any) => !item.itemType || item.itemType === "post"
+    );
+
     return postsOnly; // Return only posts for now
   }, [postsData]);
 
   // Handle reel click to open full-screen viewer
   const handleReelClick = (reel: Reel) => {
-    const reelIndex = reelsData?.reels.findIndex(r => r._id === reel._id) ?? 0;
+    const reelIndex =
+      reelsData?.reels.findIndex((r) => r._id === reel._id) ?? 0;
     setSelectedReelIndex(reelIndex);
   };
 
@@ -183,23 +169,32 @@ const Home = () => {
     <>
       <HomeProfileHeader user={user as User} />
       <StoryPreview user={user as User} />
-      
+
       {allPosts && allPosts.length > 0 ? (
         <>
           {/* Display first two posts */}
           {allPosts.slice(0, 2).map((post: Post, index: number) => {
             if (!post || !post._id) {
-              console.log('[DEBUG] Invalid post data:', post);
-              return <div key={index} className="p-4 border border-red-500">Invalid post data</div>;
+              return (
+                <div key={index} className="p-4 border border-red-500">
+                  Invalid post data
+                </div>
+              );
             }
 
             if (!post.author || !post.author.name) {
-              console.log('[DEBUG] Missing author data:', post.author);
-              return <div key={`${post._id}-${index}`} className="p-4 border border-orange-500">Missing author data for post {post._id}</div>;
+              return (
+                <div
+                  key={`${post._id}-${index}`}
+                  className="p-4 border border-orange-500"
+                >
+                  Missing author data for post {post._id}
+                </div>
+              );
             }
 
             return (
-              <div key={`${post._id}-${index}`}>            
+              <div key={`${post._id}-${index}`}>
                 <PostCard
                   {...post}
                   author={{
@@ -218,22 +213,27 @@ const Home = () => {
 
           {/* Reels Section - Display after first 2 posts */}
           <div className="flex items-center justify-between mb-4">
-                <div>
-                  <h2 className="text-xl font-semibold text-gray-900">Trending Reels</h2>
-                  <p className="text-sm text-gray-600">Discover amazing content from creators</p>
-                </div>
-                <Button
-                  onClick={() => setIsCreateReelOpen(true)}
-                  className="flex items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white shadow-lg hover:shadow-xl transition-all duration-200"
-                >
-                  <Plus size={16} />
-                  Create Reel
-                </Button>
-              </div>
+            <div>
+              <h2 className="text-xl font-semibold text-gray-900">
+                Trending Reels
+              </h2>
+              <p className="text-sm text-gray-600">
+                Discover amazing content from creators
+              </p>
+            </div>
+            <Button
+              onClick={() => setIsCreateReelOpen(true)}
+              variant={"default"}
+              className="flex bg-transparent hover:bg-transparent border-none outline-none items-center gap-2 bg-gradient-to-r cursor-pointer text-[#4EAAE9]"
+            >
+              <Plus size={16} />
+              Create Reel
+            </Button>
+          </div>
           {reelsData?.reels && reelsData.reels.length > 0 && (
             <div className="mb-6">
-              <ReelsSection 
-                reels={reelsData.reels} 
+              <ReelsSection
+                reels={reelsData.reels}
                 onReelClick={handleReelClick}
                 token={token as string}
                 currentUser={user}
@@ -244,17 +244,28 @@ const Home = () => {
           {/* Display remaining posts */}
           {allPosts.slice(2).map((post: Post, index: number) => {
             if (!post || !post._id) {
-              console.log('[DEBUG] Invalid post data:', post);
-              return <div key={index + 2} className="p-4 border border-red-500">Invalid post data</div>;
+              console.log("[DEBUG] Invalid post data:", post);
+              return (
+                <div key={index + 2} className="p-4 border border-red-500">
+                  Invalid post data
+                </div>
+              );
             }
 
             if (!post.author || !post.author.name) {
-              console.log('[DEBUG] Missing author data:', post.author);
-              return <div key={`${post._id}-${index + 2}`} className="p-4 border border-orange-500">Missing author data for post {post._id}</div>;
+              console.log("[DEBUG] Missing author data:", post.author);
+              return (
+                <div
+                  key={`${post._id}-${index + 2}`}
+                  className="p-4 border border-orange-500"
+                >
+                  Missing author data for post {post._id}
+                </div>
+              );
             }
 
             return (
-              <div key={`${post._id}-${index + 2}`}>            
+              <div key={`${post._id}-${index + 2}`}>
                 <PostCard
                   {...post}
                   author={{
@@ -270,7 +281,7 @@ const Home = () => {
               </div>
             );
           })}
-          
+
           {/* Infinite scroll loading trigger */}
           <div ref={loadingRef}>
             <InfiniteScrollLoader

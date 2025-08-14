@@ -277,10 +277,10 @@ export const PostCard = ({
           <ReactionPopover
             postId={_id}
             isReacted={reactions.some(
-              (reaction) => reaction.user === currentUser?.id
+              (reaction) => reaction.user._id === currentUser?.id
             )}
             isReactedType={
-              reactions.find((reaction) => reaction.user === currentUser?.id)
+              reactions.find((reaction) => reaction.user._id === currentUser?.id)
                 ?.type as "like" | "love" | "haha" | "wow" | "sad" | "angry"
             }
           />

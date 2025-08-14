@@ -149,7 +149,7 @@ function ReelGridItem({
             <Button
               variant="outline"
               size="sm"
-              className="h-6 px-2 text-xs bg-transparent border-white text-white hover:bg-white hover:text-black transition-colors rounded-full"
+              className="h-6 px-2 text-xs bg-transparent border-white text-white hover:bg-transparent hover:border-white hover:text-white transition-colors rounded-full"
               onClick={(e) => {
                 e.stopPropagation();
                 // TODO: Implement follow functionality
