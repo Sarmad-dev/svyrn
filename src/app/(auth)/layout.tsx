@@ -10,7 +10,7 @@ interface AuthProps {
 
 const AuthLayout = ({ children }: AuthProps) => {
   return (
-    <main className="w-full h-screen flex">
+    <main className="w-full md:h-screen flex">
       <div className="flex items-center justify-center px-20 max-md:hidden">
         <Side />
         <Ellipses />
@@ -21,8 +21,8 @@ const AuthLayout = ({ children }: AuthProps) => {
         </div>
         {children}
       </div>
-      <div className="md:hidden h-full flex flex-col w-full">
-        <div className="w-full h-[calc(100%-70px)] flex items-center justify-center">
+      <div className="md:hidden flex flex-col w-full">
+        <div className="w-full h-[calc(100vh-170px)] flex items-center justify-center">
           {children}
         </div>
         <div className="h-[70px]">

@@ -7,10 +7,12 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import * as SheetPrimitive from "@radix-ui/react-dialog"
+import { ChevronDown, ChevronUp, XIcon } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 import { Separator } from "../ui/separator";
+import { Button } from "../ui/button";
 
 const AuthBottomSheet = () => {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
@@ -98,9 +100,9 @@ const AuthBottomSheet = () => {
                 </span>
               </div>
               <div className="flex items-center space-x-2">
-                <button onClick={() => setIsSheetOpen(false)}>
-                  <ChevronDown size={24} className="text-gray-400" />
-                </button>
+                <Button size={"icon"} className="bg-transparent hover:bg-transparent cursor-pointer border-noner" onClick={() => setIsSheetOpen(false)}>
+                  <ChevronDown size={24} className="text-white" />
+                </Button>
               </div>
             </div>
           </div>
@@ -109,8 +111,8 @@ const AuthBottomSheet = () => {
             <Image
               src="/icons/logo-blue.png"
               alt="logo"
-              width={130}
-              height={100}
+              width={100}
+              height={70}
             />
             <p className="text-[#AFC2CF] text-[18px] font-bold mb-2">
               The social network for sovereign beings
@@ -120,7 +122,7 @@ const AuthBottomSheet = () => {
             <p className="text-[#AFC2CF] text-[15px] font-bold">Speak freely.</p>
             <p className="text-[#AFC2CF] text-[15px] font-bold">Connect consciously.</p>
 
-            <div className="space-y-4 text-[#000000]/60 my-4 text-[17px] font-medium leading-7">
+            <div className="space-y-4 text-[#000000]/60 my-4 text-[17px] font-medium">
               <p>
                 SVRYN is not just another platform - it&apos;s a movement. A
                 censorship-resistant space where truth-seekers, healers,
@@ -130,7 +132,7 @@ const AuthBottomSheet = () => {
 
               <div>
                 <h3 className="text-black mb-2 text-[17px] font-bold">Why SVRYN</h3>
-                <ul className="space-y-2 text-[17px] font-medium leading-7">
+                <ul className="space-y-2 text-[16px] font-medium">
                   <li>
                     • <strong>Unfiltered Expression</strong> – Speak your truth
                     without censorship.
@@ -154,7 +156,7 @@ const AuthBottomSheet = () => {
                 </ul>
               </div>
 
-              <div className="text-center text-[#AFC2CF] text-[15px] font-bold space-y-1 pt-4">
+              <div className="text-center text-[#AFC2CF] text-[15px] font-semibold space-y-0.5 pt-2">
                 <p>
                   This is where the new world begins.
                 </p>
