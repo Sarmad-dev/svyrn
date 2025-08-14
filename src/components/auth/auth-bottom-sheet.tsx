@@ -107,7 +107,7 @@ const AuthBottomSheet = () => {
             </div>
           </div>
 
-          <div className="px-6">
+          <div className="px-6 overflow-y-auto">
             <Image
               src="/icons/logo-blue.png"
               alt="logo"
