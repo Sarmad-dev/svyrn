@@ -62,7 +62,7 @@ const AuthBottomSheet = () => {
           <SheetTitle>Bottom Sheet</SheetTitle>
           <SheetDescription>Bottom Sheet Description</SheetDescription>
         </SheetHeader>
-        <div className="space-y-6">
+        <div className="space-y-1">
           <div className="text-center">
             <div className="flex items-center justify-between mb-4 bg-blue-500 p-4">
               <div className="flex items-center gap-6">
@@ -107,7 +107,7 @@ const AuthBottomSheet = () => {
             </div>
           </div>
 
-          <div className="p-6">
+          <div className="px-6">
             <Image
               src="/icons/logo-blue.png"
               alt="logo"
