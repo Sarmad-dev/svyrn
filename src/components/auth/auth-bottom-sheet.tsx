@@ -107,7 +107,7 @@ const AuthBottomSheet = () => {
             </div>
           </div>
 
-          <div className="px-6 overflow-y-auto">
+          <div className="px-6 overflow-y-scroll h-[calc(100vh-200px)]">
             <Image
               src="/icons/logo-blue.png"
               alt="logo"
