@@ -134,10 +134,10 @@ export const PostMediaDialog = ({
                   <ReactionPopover
                     postId={postId}
                     isReacted={reactions.some(
-                      (r) => r.user === currentUser?.id
+                      (r) => r.user._id === currentUser?.id
                     )}
                     isReactedType={
-                      reactions.find((r) => r.user === currentUser?.id)
+                      reactions.find((r) => r.user._id === currentUser?.id)
                         ?.type as
                         | "like"
                         | "love"
