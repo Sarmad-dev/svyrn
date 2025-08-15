@@ -22,7 +22,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { 
-  ArrowLeft, 
   Users, 
   Calendar, 
   Globe, 
@@ -35,21 +34,21 @@ import {
   Globe as WebsiteIcon,
   Edit,
   Settings,
-  Share2,
   MessageSquare,
   Heart,
   Eye,
   Clock,
   TrendingUp,
-  Image,
   Plus,
   X,
-  Upload
+  Upload,
+  Share2
 } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter, useParams } from "next/navigation";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import { authClient } from "@/lib/auth-client";
+import GroupHeader from "@/components/group/groupId/group-header";
 
 const categoryColors: Record<string, string> = {
   business: "bg-blue-100 text-blue-800",
@@ -314,213 +313,69 @@ export default function PageViewPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Header */}
-      <div className="bg-white border-b border-gray-100 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-4 py-4">
-            <Button
-              variant="ghost"
-              onClick={() => router.back()}
-              className="text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-            >
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back
-            </Button>
-            <div className="flex-1">
-              <h1 className="text-xl font-semibold text-gray-900">{page.name}</h1>
-            </div>
-            <div className="flex items-center gap-2">
-              {isAdmin && (
+      {/* Cover and Profile using GroupHeader */}
+      <GroupHeader
+        group={{
+          isAdmin: Boolean(isAdmin),
+          isCreator: Boolean(isOwner),
+          profilePicture: page.profilePicture,
+          coverPhoto: page.coverPhoto,
+          name: page.name,
+        }}
+        pageId={pageId}
+        compact
+        noHorizontalPadding
+      />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        {/* Stats */}
+        <div className="flex flex-wrap items-center gap-6 text-sm text-gray-700 mb-4">
+          <div className="flex items-center gap-2">
+            <Users className="w-4 h-4 text-gray-500" />
+            <span>{page.followersCount || 0} followers</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <BookOpen className="w-4 h-4 text-gray-500" />
+            <span>{page.postsCount || 0} posts</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Calendar className="w-4 h-4 text-gray-500" />
+            <span>Created {new Date(page.createdAt).toLocaleDateString()}</span>
+          </div>
+        </div>
+
+        {/* Tabs (solid theme) */}
+        <Tabs defaultValue="posts" className="w-full">
+          <TabsList className="flex w-full bg-white shadow-sm border border-gray-200 rounded-md overflow-hidden">
+            <TabsTrigger value="posts" className="data-[state=active]:bg-gray-100 data-[state=active]:text-gray-900">
+              Posts
+            </TabsTrigger>
+            <TabsTrigger value="about" className="data-[state=active]:bg-gray-100 data-[state=active]:text-gray-900">
+              About
+            </TabsTrigger>
+          </TabsList>
+
+          {/* Actions below tabs */}
+          <div className="flex items-center gap-2 justify-end mt-4">
+            {isOwner && (
+              <>
                 <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={handleEdit}
-                  className="hover:bg-blue-50 hover:border-blue-200"
-                >
-                  <Edit className="w-4 h-4 mr-2" />
-                  Edit
-                </Button>
-              )}
-              {isOwner && (
-                <Button 
-                  size="sm"
                   onClick={() => setIsCreatePostOpen(true)}
-                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
+                  className=""
                 >
                   <Plus className="w-4 h-4 mr-2" />
                   Create Post
                 </Button>
-              )}
-              {isOwner && (
                 <Button 
                   variant="outline" 
-                  size="sm"
                   onClick={() => setIsSettingsOpen(true)}
-                  className="hover:bg-purple-50 hover:border-purple-200"
                 >
                   <Settings className="w-4 h-4 mr-2" />
                   Settings
                 </Button>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Page Header */}
-        <div className="bg-white rounded-2xl sm:h-[500px] shadow-lg border border-gray-100 overflow-hidden mb-8">
-          {/* Cover Photo */}
-          <div className="relative h-48 sm:h-64 lg:h-80 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 overflow-hidden">
-            {page.coverPhoto ? (
-              <img 
-                src={page.coverPhoto} 
-                alt="Cover" 
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <div className="w-full h-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 flex items-center justify-center">
-                <div className="text-center text-white">
-                  <Image className="w-16 h-16 mx-auto mb-2 opacity-50" />
-                  <p className="text-lg font-medium opacity-75">No cover photo</p>
-                </div>
-              </div>
-            )}
-            {isAdmin && (
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="absolute top-4 right-4 bg-white/95 hover:bg-white shadow-lg border-gray-200 z-20"
-                onClick={handleEdit}
-              >
-                <Edit className="w-4 h-4 mr-2" />
-                Edit Cover
-              </Button>
+              </>
             )}
           </div>
-
-          {/* Profile Section */}
-          <div className="px-4 sm:px-6 lg:px-8 pb-6 relative z-10">
-            <div className="flex flex-col sm:flex-row items-start sm:items-end gap-4 -mt-16 sm:-mt-20 lg:-mt-24">
-              {/* Profile Picture */}
-              <div className="relative mx-auto sm:mx-0">
-                <Avatar className="w-24 h-24 sm:w-32 sm:h-32 lg:w-40 lg:h-40 border-4 border-white shadow-xl">
-                  <AvatarImage src={page.profilePicture} alt={page.name} />
-                  <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white text-2xl sm:text-3xl lg:text-4xl font-bold">
-                    {page.name.charAt(0).toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-                {isAdmin && (
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="absolute -bottom-2 -right-2 bg-white shadow-lg border-gray-200 hover:bg-gray-50"
-                    onClick={handleEdit}
-                  >
-                    <Edit className="w-3 h-3" />
-                  </Button>
-                )}
-              </div>
-
-              {/* Page Info */}
-              <div className="flex-1 min-w-0 text-center relative sm:top-20 sm:text-left bg-white rounded-lg p-4 sm:p-0 sm:bg-transparent">
-                <div className="flex items-center justify-center sm:justify-start gap-2 mb-2">
-                  <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">{page.name}</h1>
-                  {page.isVerified && (
-                    <Star className="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7 text-blue-500 fill-current" />
-                  )}
-                </div>
-                
-                {page.username && (
-                  <p className="text-base sm:text-lg lg:text-xl text-gray-600 mb-2">@{page.username}</p>
-                )}
-
-                {page.description && (
-                  <p className="text-gray-700 mb-3 max-w-2xl text-sm sm:text-base">{page.description}</p>
-                )}
-
-                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 mb-4">
-                  <Badge 
-                    variant="secondary" 
-                    className={`${categoryColors[page.category] || categoryColors.other} text-xs sm:text-sm`}
-                  >
-                    {page.category}
-                  </Badge>
-                  <div className="flex items-center gap-1 text-gray-500">
-                    {privacyIcons[page.privacy]}
-                    <span className="text-xs sm:text-sm capitalize">{page.privacy}</span>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-center sm:justify-start gap-4 sm:gap-6 text-xs sm:text-sm text-gray-600">
-                  <div className="flex items-center gap-1">
-                    <Users className="w-4 h-4" />
-                    <span>{page.followersCount || 0} followers</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <BookOpen className="w-4 h-4" />
-                    <span>{page.postsCount || 0} posts</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Calendar className="w-4 h-4" />
-                    <span>Created {new Date(page.createdAt).toLocaleDateString()}</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-                {!isOwner && (
-                  <Button
-                    variant={isFollowing ? "outline" : "default"}
-                    onClick={handleFollow}
-                    disabled={followMutation.isPending || unfollowMutation.isPending}
-                    className={`w-full sm:w-auto ${
-                      isFollowing 
-                        ? "border-gray-300 text-gray-700 hover:bg-gray-50" 
-                        : "bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
-                    }`}
-                  >
-                    {followMutation.isPending || unfollowMutation.isPending ? (
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current"></div>
-                    ) : isFollowing ? (
-                      "Unfollow"
-                    ) : (
-                      "Follow"
-                    )}
-                  </Button>
-                )}
-                <Button 
-                  variant="outline" 
-                  onClick={handleMessage}
-                  className="w-full sm:w-auto hover:bg-blue-50 hover:border-blue-200"
-                >
-                  <MessageSquare className="w-4 h-4 mr-2" />
-                  Message
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Tabs */}
-        <Tabs defaultValue="posts" className="w-full">
-          <TabsList className="grid w-full grid-cols-4 bg-white shadow-sm border border-gray-200 rounded-xl overflow-hidden">
-            <TabsTrigger value="posts" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 data-[state=active]:font-medium">
-              Posts
-            </TabsTrigger>
-            <TabsTrigger value="about" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 data-[state=active]:font-medium">
-              About
-            </TabsTrigger>
-            <TabsTrigger value="followers" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 data-[state=active]:font-medium">
-              Followers
-            </TabsTrigger>
-            {isAdmin && (
-              <TabsTrigger value="analytics" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 data-[state=active]:font-medium">
-                Analytics
-              </TabsTrigger>
-            )}
-          </TabsList>
 
           <TabsContent value="posts" className="mt-6">
             <PagePostsTab pageId={pageId} />
@@ -529,16 +384,6 @@ export default function PageViewPage() {
           <TabsContent value="about" className="mt-6">
             <PageAboutTab page={page} />
           </TabsContent>
-
-          <TabsContent value="followers" className="mt-6">
-            <PageFollowersTab page={page} />
-          </TabsContent>
-
-          {isAdmin && (
-            <TabsContent value="analytics" className="mt-6">
-              <PageAnalyticsTab page={page} />
-            </TabsContent>
-          )}
         </Tabs>
       </div>
 

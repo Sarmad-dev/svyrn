@@ -106,6 +106,8 @@ const UserPage = () => {
               coverPhoto: user?.user?.coverPhoto,
               name: user?.user?.name,
             }}
+            compact
+            noHorizontalPadding
           />
           <div className="container mx-auto px-4 py-4">
             <div className="relative md:left-4 md:top-[0px] z-10 mb-4 md:mb-0">

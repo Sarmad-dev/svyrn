@@ -23,9 +23,11 @@ interface Props {
   groupId?: string;
   pageId?: string;
   userId?: string;
+  compact?: boolean;
+  noHorizontalPadding?: boolean;
 }
 
-export default function GroupHeader({ group, groupId, pageId, userId }: Props) {
+export default function GroupHeader({ group, groupId, pageId, userId, compact = false, noHorizontalPadding = false }: Props) {
   const { data: session } = authClient.useSession();
   const isEditable = group.isAdmin && group.isCreator;
   const [coverPhoto, setCoverPhoto] = useState<string>(
@@ -100,7 +102,10 @@ export default function GroupHeader({ group, groupId, pageId, userId }: Props) {
   return (
     <div className="w-full relative">
       {/* Cover Photo */}
-      <div className="w-full h-[300px] md:h-[400px] relative group/cover overflow-hidden rounded-b-xl">
+      <div className={cn(
+        "w-full relative group/cover overflow-hidden rounded-b-md max-md:rounded-b-none",
+        compact ? "h-[200px] md:h-[300px]" : "h-[300px] md:h-[400px]"
+      )}>
         <Image
           src={coverPhoto || "/images/cover.jpeg"}
           alt="cover photo"
@@ -131,10 +136,13 @@ export default function GroupHeader({ group, groupId, pageId, userId }: Props) {
         )}
       </div>
       {/* Profile Picture and Name Container */}
-      <div className="container mx-auto px-4 md:px-6">
+      <div className={cn("container mx-auto", noHorizontalPadding ? "px-0" : "px-4 md:px-6") }>
         <div className="relative flex flex-col items-center md:items-start gap-4 pt-4 md:pt-0">
           {/* Profile Picture - Positioned to overlap cover photo */}
-          <div className="absolute -top-[100px] md:-top-[120px] left-1/2 md:left-0 transform md:transform-none -translate-x-1/2 md:translate-x-0 w-[180px] h-[180px] rounded-full overflow-hidden border-4 border-white shadow-xl group/avatar flex-shrink-0 bg-white">
+          <div className={cn(
+            "absolute left-1/2 md:left-0 transform md:transform-none -translate-x-1/2 md:translate-x-0 w-[180px] h-[180px] rounded-full overflow-hidden border-4 border-white shadow-xl group/avatar flex-shrink-0 bg-white",
+            compact ? "-top-[90px] md:-top-[100px]" : "-top-[100px] md:-top-[120px]"
+          )}>
             <Image
               src={avatar || "/images/user.png"}
               alt="avatar"
@@ -164,7 +172,10 @@ export default function GroupHeader({ group, groupId, pageId, userId }: Props) {
             )}
           </div>
           {/* Group Name */}
-          <div className="text-center md:text-left mt-[100px] md:mt-[10px] mb-4 md:mb-0 md:ml-[200px]">
+          <div className={cn(
+            "text-center md:text-left mb-4 md:mb-0 md:ml-[200px]",
+            compact ? "mt-[85px] md:mt-0" : "mt-[100px] md:mt-[10px]"
+          )}>
             <h1 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight">
               {group.name}
             </h1>

@@ -56,10 +56,12 @@ const Group = () => {
           name: group?.name,
         }}
         groupId={id as string}
+        compact
+        noHorizontalPadding
       />
 
-      <div className="container mx-auto px-4 md:px-6 lg:px-8 py-6">
-        <div className="max-w-4xl mx-auto">
+      <div className="container mx-auto px-0 md:px-6 lg:px-8 py-6">
+        <div className="w-full md:max-w-4xl md:mx-auto">
           <AnimatedTabs
             user={currentUser?.user as User}
             group={group as GroupWithPosts}

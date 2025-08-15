@@ -28,7 +28,7 @@ const ProfilePage = () => {
     <main>
       <Header />
       <div className="w-full">
-        <div className="container mx-auto px-3 md:px-0">
+        <div className="container mx-auto px-0 md:px-0">
           <GroupHeader
             userId={user?.id}
             group={{
@@ -38,10 +38,12 @@ const ProfilePage = () => {
               coverPhoto: user?.coverPhoto,
               name: user?.name,
             }}
+            compact
+            noHorizontalPadding
           />
 
           {/* Tabs anchored directly below header (like Facebook). Name is displayed above the tabs. */}
-          <div className="mt-16 max-2xl:mt-12">
+          <div className="mt-12 max-2xl:mt-10 px-0">
             <ProfileAnimatedTabs user={user as User} />
           </div>
         </div>
