@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import {
   updateCoverPhoto,
@@ -37,6 +37,18 @@ export default function GroupHeader({ group, groupId, pageId, userId, compact = 
 
   const inputCoverRef = useRef<HTMLInputElement>(null);
   const inputAvatarRef = useRef<HTMLInputElement>(null);
+
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const isTouch =
+        "ontouchstart" in window ||
+        (navigator &&
+          (navigator.maxTouchPoints > 0 ||
+            (window.matchMedia && window.matchMedia("(hover: none)").matches)));
+      setIsTouchDevice(!!isTouch);
+    }
+  }, []);
 
   const { mutate } = useMutation({
     mutationKey: ["updateGroupCoverPhoto"],
@@ -99,10 +111,16 @@ export default function GroupHeader({ group, groupId, pageId, userId, compact = 
     }
   };
 
+  const handleCoverClick = () => {
+    if (!isEditable) return;
+    if (!isTouchDevice) return;
+    inputCoverRef.current?.click();
+  };
+
   return (
     <div className="w-full relative">
       {/* Cover Photo */}
-      <div className={cn(
+      <div onClick={handleCoverClick} className={cn(
         "w-full relative group/cover overflow-hidden rounded-b-md max-md:rounded-b-none",
         compact ? "h-[200px] md:h-[300px]" : "h-[300px] md:h-[400px]"
       )}>
@@ -116,7 +134,7 @@ export default function GroupHeader({ group, groupId, pageId, userId, compact = 
           priority
         />
         {isEditable && (
-          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/cover:opacity-100 transition-opacity duration-300 bg-black/40">
+          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/cover:opacity-100 transition-opacity duration-300 bg-black/40 pointer-events-none group-hover/cover:pointer-events-auto">
             <input
               type="file"
               className="hidden"
@@ -124,7 +142,8 @@ export default function GroupHeader({ group, groupId, pageId, userId, compact = 
               onChange={handleCoverPhotoChange}
             />
             <Button
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 inputCoverRef.current?.click();
               }}
               variant="secondary"
