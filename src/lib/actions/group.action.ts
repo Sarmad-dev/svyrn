@@ -273,8 +273,22 @@ export const updateCoverPhoto = async ({
   userId?: string;
 }) => {
   try {
+    const urlParams = new URLSearchParams();
+
+    if (groupId) {
+      urlParams.set("groupId", groupId);
+    }
+
+    if (pageId) {
+      urlParams.set("pageId", pageId);
+    }
+
+    if (userId) {
+      urlParams.set("userId", userId);
+    }
+
     const res = await fetch(
-      `${config.apiUrl}/api/upload/cover-photo?groupId=${groupId}&pageId=${pageId}&userId=${userId}`,
+      `${config.apiUrl}/api/upload/cover-photo?${urlParams.toString()}`,
       {
         method: "POST",
         headers: {
@@ -321,8 +335,22 @@ export const updateProfilePicture = async ({
   userId?: string;
 }) => {
   try {
+    const urlParams = new URLSearchParams();
+
+    if (groupId) {
+      urlParams.set("groupId", groupId);
+    }
+
+    if (pageId) {
+      urlParams.set("pageId", pageId);
+    }
+
+    if (userId) {
+      urlParams.set("userId", userId);
+    }
+
     const res = await fetch(
-      `${config.apiUrl}/api/upload/profile-picture?groupId=${groupId}&pageId=${pageId}&userId=${userId}`,
+      `${config.apiUrl}/api/upload/profile-picture?${urlParams.toString()}`,
       {
         method: "POST",
         headers: {
