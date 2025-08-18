@@ -88,7 +88,7 @@ const Marketplace = () => {
       ) : products && products.length > 0 ? (
         <>
           {/* Products Grid */}
-          <div className="grid grid-cols-3 max-md:grid-cols- gap-5 mt-5 max-md:px-3">
+          <div className="grid grid-cols-3 max-md:grid-cols-1 gap-5 mt-5 max-md:px-3">
             {products.map((product: ProductCardType) => (
               <ProductCard
                 _id={product._id}
