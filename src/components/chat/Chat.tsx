@@ -4,26 +4,25 @@ import Chatarea from "./chat-area";
 import { useQueryState } from "nuqs";
 import ChatSheet from "./chat-sheet";
 import { useQuery } from "@tanstack/react-query";
-import { getConversation } from "@/lib/actions/conversation.action";
+import { getConversations } from "@/lib/actions/conversation.action";
 import { authClient } from "@/lib/auth-client";
 
 export const Chat: React.FC = () => {
   const { data } = authClient.useSession();
   const [conversationId, setConversationId] = useQueryState("conversationId");
 
-  const { data: conversation } = useQuery({
-    queryKey: ["conversation", conversationId],
+  const { data: conversations } = useQuery({
+    queryKey: ["get-conversations"],
     queryFn: async () =>
-      await getConversation({
+      await getConversations({
         token: data?.session.token as string,
-        id: conversationId as string,
       }),
-    enabled: !!conversationId && !!data?.session.token,
+    enabled: !!data?.session.token,
   });
 
   useEffect(() => {
-    setConversationId(conversation[0]?._id);
-  }, [conversation[0]?._id]);
+    setConversationId(conversations?.conversations?.[0]?._id);
+  }, [conversations?.conversations?.[0]?._id]);
 
   return (
     <>
