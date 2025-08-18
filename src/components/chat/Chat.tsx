@@ -22,8 +22,8 @@ export const Chat: React.FC = () => {
   });
 
   useEffect(() => {
-    setConversationId(conversation?._id);
-  }, [conversation?._id]);
+    setConversationId(conversation[0]?._id);
+  }, [conversation[0]?._id]);
 
   return (
     <>
