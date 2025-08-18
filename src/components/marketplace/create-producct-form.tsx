@@ -21,7 +21,7 @@ const formSchema = z.object({
   description: z.string().min(1, "Description is required"),
   privacy: z.enum(["public", "friends"]),
   images: z.any(),
-  phone: z.string().min(1, "Phone number is required"),
+  phone: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -45,7 +45,7 @@ export default function CreateProductForm() {
           title: data.title,
           contact: {
             email: session?.user.email as string,
-            phone: data.phone,
+            phone: data.phone || '',
           },
         },
       }),
@@ -134,7 +134,7 @@ export default function CreateProductForm() {
         <Input
           id="phone"
           {...register("phone")}
-          placeholder="Phone (required)"
+          placeholder="Phone"
         />
         {errors.amount && (
           <p className="text-sm text-red-500">{errors.phone?.message}</p>

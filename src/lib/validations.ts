@@ -16,7 +16,7 @@ export const forgotPasswordSchema = z.object({
 });
 
 export const createPostSchema = z.object({
-  text: z.string().min(3),
+  text: z.string().optional(),
   base64: z.string().optional(),
   privacy: z.enum(["public", "friends", "private"]),
   pageId: z.string().optional(),

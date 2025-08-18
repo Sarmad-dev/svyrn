@@ -50,8 +50,8 @@ const Marketplace = () => {
   };
 
   return (
-    <div>
-      <div className="w-full flex items-center justify-between max-md:px-3">
+    <>
+      <div className="w-full flex items-center justify-between max-md:px-3 max-md:mt-2">
         <h2 className="font-semibold text-lg">Marketplace</h2>
         <div className="flex gap-x-2">
           <Link
@@ -88,7 +88,7 @@ const Marketplace = () => {
       ) : products && products.length > 0 ? (
         <>
           {/* Products Grid */}
-          <div className="grid grid-cols-3 max-md:grid-cols-2 gap-5 mt-5 max-md:px-3">
+          <div className="grid grid-cols-3 max-md:grid-cols- gap-5 mt-5 max-md:px-3">
             {products.map((product: ProductCardType) => (
               <ProductCard
                 _id={product._id}
@@ -234,7 +234,7 @@ const Marketplace = () => {
           </CreateProductDialog>
         </div>
       )}
-    </div>
+    </>
   );
 };
 

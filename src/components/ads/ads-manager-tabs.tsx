@@ -330,6 +330,7 @@ export default function AdsManagerTabs() {
           onClose={handleAdCreated}
           initialStep="ad"
           adSetId={selectedAdSetId}
+          campaignId={selectedCampaignId}
         />
       )}
 

@@ -17,14 +17,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { getMe } from "@/lib/actions/user.action";
+import { getMe, updateUser } from "@/lib/actions/user.action";
 import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 import { settingSchema } from "@/lib/validations";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { CalendarIcon, Loader2 } from "lucide-react";
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
 import { format } from "date-fns";
@@ -37,22 +37,46 @@ import { Calendar } from "@/components/ui/calendar";
 
 const Page = () => {
   const { data: session, isPending: isUserPending } = authClient.useSession();
+  const queryClient = useQueryClient();
   const { data: user, isPending } = useQuery({
     queryKey: ["get-me"],
     queryFn: async () => await getMe(session?.session.token as string),
     enabled: !!session?.session.token,
   });
 
+  const updateUserMutation = useMutation({
+    mutationFn: async (data: z.infer<typeof settingSchema>) => {
+      return await updateUser({ data, token: session?.session.token as string });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["get-me"] });
+    },
+  });
+
   const form = useForm<z.infer<typeof settingSchema>>({
     mode: "onSubmit",
     resolver: zodResolver(settingSchema),
     defaultValues: {
-      firstName: user?.name.split(" ")[0],
-      lastName: user?.name.split(" ")[1],
-      gender: user?.gender,
-      dateOfBirth: user?.dateOfBirth as Date,
+      firstName: "",
+      lastName: "",
+      gender: undefined as unknown as "male" | "female" | "other" | undefined,
+      dateOfBirth: undefined,
     },
   });
+
+  useEffect(() => {
+    form.reset({
+      firstName: user?.name ? user.name.split(" ")[0] ?? "" : "",
+      lastName:
+        user?.name && user.name.split(" ").length > 1
+          ? user.name.split(" ").slice(1).join(" ")
+          : "",
+      gender: user?.gender,
+      dateOfBirth: user?.dateOfBirth
+        ? new Date(user.dateOfBirth as unknown as string)
+        : undefined,
+    });
+  }, [user]);
 
   if (isUserPending || isPending) {
     return (
@@ -62,6 +86,10 @@ const Page = () => {
     );
   }
 
+  const handleSubmit = (data: z.infer<typeof settingSchema>) => {
+    updateUserMutation.mutateAsync(data)
+  };
+
   return (
     <div className="space-y-3 max-md:px-3">
       <h2 className="text-lg font-semibold">Settings</h2>
@@ -69,11 +97,11 @@ const Page = () => {
       <Separator />
 
       <Form {...form}>
-        <form>
+        <form onSubmit={form.handleSubmit(handleSubmit)}>
           <FormLabel className="mb-2">Name</FormLabel>
-          <Input value={user?.name} disabled />
+          <Input value={user?.name ?? ""} disabled />
           <FormLabel className="mt-5 mb-2">Email</FormLabel>
-          <Input value={user?.email} disabled />
+          <Input value={user?.email ?? ""} disabled />
           <p className="block mt-5 font-medium">Personal Information</p>
           <Separator />
           <div className="grid grid-cols-2 gap-x-8 gap-y-3 mt-5 max-md:grid-cols-1">
@@ -86,6 +114,7 @@ const Page = () => {
                     <FormLabel>First Name</FormLabel>
                     <FormControl>
                       <Input {...field} />
+                      
                     </FormControl>
                   </FormItem>
                 </div>
@@ -100,6 +129,7 @@ const Page = () => {
                     <FormLabel>Last Name</FormLabel>
                     <FormControl>
                       <Input {...field} />
+                      
                     </FormControl>
                   </FormItem>
                 </div>
@@ -114,12 +144,13 @@ const Page = () => {
                     <FormLabel>Gender</FormLabel>
                     <FormControl>
                       <Select
+                        value={field.value ?? ""}
+                        onValueChange={field.onChange}
                         defaultValue={field.value}
-                        onValueChange={field.onChange}>
+                        >
                         <SelectTrigger className="w-full data-[size=default]:h-[50px]">
                           <SelectValue
-                            className=""
-                            placeholder="Select a gender"
+                            placeholder={field.value ? field.value.charAt(0).toUpperCase() + field.value.slice(1) : "Select a gender"}
                           />
                         </SelectTrigger>
                         <SelectContent>
@@ -175,6 +206,14 @@ const Page = () => {
               )}
             />
           </div>
+
+          <Button type="submit" className="mt-5" disabled={form.formState.isSubmitting}>
+            {form.formState.isSubmitting ? (
+              <Loader2 className="animate-spin" />
+            ) : (
+              "Save Changes"
+            )}
+          </Button>
         </form>
       </Form>
     </div>

@@ -111,7 +111,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
           {images.map((src, idx) => (
             <div
               key={idx}
-              className="keen-slider__slide relative aspect-[4/3] max-md:aspect-[4/2]">
+              className="keen-slider__slide relative aspect-[4/2.5] max-md:aspect-[4/2]">
               <Image
                 src={src}
                 alt={`Product ${idx}`}

@@ -31,8 +31,6 @@ const ProductPage = () => {
     );
   }
 
-  console.log(JSON.stringify(data?.product, null, 2) as string);
-
   return (
     <div>
       <ProductDetail

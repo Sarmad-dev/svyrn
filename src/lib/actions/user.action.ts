@@ -55,7 +55,6 @@ export const updateUser = async <T>({
   token: string;
   data: T;
 }) => {
-  console.log("DATA: ", data);
   try {
     const response = await fetch(`${config.apiUrl}/api/users/profile`, {
       method: "PUT",
@@ -65,8 +64,6 @@ export const updateUser = async <T>({
       },
       body: JSON.stringify(data),
     });
-
-    console.log("RESPONSE: ", response);
 
     if (!response.ok) {
       toast.error("Something went wrong");
@@ -83,7 +80,7 @@ export const updateUser = async <T>({
       return null;
     }
   } catch (error) {
-    console.log("ERROR: ", error);
+    console.log("Errors: ", error);
     toast.error("Something went wrong");
   }
 };
@@ -339,6 +336,74 @@ export const getOnlineUsers = async ({ token }: { token: string }) => {
     }
 
     return data.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getUserPhotos = async ({
+  token,
+  userId,
+}: {
+  token: string;
+  userId: string;
+}) => {
+  try {
+    const response = await fetch(
+      `${config.apiUrl}/api/users/${userId}/photos`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      toast.error("Something went wrong");
+    }
+
+    const data = await response.json();
+
+    if (data.status === "error") {
+      toast.error(data.message);
+    }
+
+    return data.data.photos;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getUserVideos = async ({
+  token,
+  userId,
+}: {
+  token: string;
+  userId: string;
+}) => {
+  try {
+    const response = await fetch(
+      `${config.apiUrl}/api/users/${userId}/videos`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      toast.error("Something went wrong");
+    }
+
+    const data = await response.json();
+
+    if (data.status === "error") {
+      toast.error(data.message);
+    }
+
+    return data.data.videos;
   } catch (error) {
     console.log(error);
   }

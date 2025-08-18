@@ -159,18 +159,6 @@ export const CreateAd: React.FC<CreateAdDialogProps> = ({
     onClose();
   };
 
-  const handleSkipToCampaignManager = async () => {
-    await queryClient.invalidateQueries({ queryKey: ["campaigns"] });
-    toast.success("Campaign created successfully! You can add ads later.");
-    onClose();
-  };
-
-  const handleAdSetCreated = async () => {
-    await queryClient.invalidateQueries({ queryKey: ["campaigns"] });
-    toast.success("Ad set created successfully!");
-    onClose();
-  };
-
   const handleAdCreated = async () => {
     await queryClient.invalidateQueries({ queryKey: ["campaigns"] });
     toast.success("Ad created successfully!");

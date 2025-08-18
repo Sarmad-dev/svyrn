@@ -13,7 +13,11 @@ import {
 import Link from "next/link";
 
 type PhotosPreviewProps = {
-  photos: string[];
+  photos: {
+    url: string;
+    _id: string;
+    createdAt: string;
+  }[];
 };
 
 export default function PhotosPreview({ photos }: PhotosPreviewProps) {
@@ -32,7 +36,7 @@ export default function PhotosPreview({ photos }: PhotosPreviewProps) {
             <DialogTrigger asChild>
               <button className="relative w-full pt-[100%] overflow-hidden rounded">
                 <Image
-                  src={src}
+                  src={src.url}
                   alt={`photo-${i}`}
                   fill
                   loading="lazy"
@@ -51,7 +55,7 @@ export default function PhotosPreview({ photos }: PhotosPreviewProps) {
               </DialogHeader>
               <div className="relative w-[96vw] md:w-[90vw] max-w-4xl h-[80dvh] md:h-[85vh]">
                 <Image
-                  src={src}
+                  src={src.url}
                   alt={`photo-${i}`}
                   fill
                   className="object-contain"
