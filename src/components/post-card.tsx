@@ -84,6 +84,104 @@ export const PostCard = ({
       }),
     enabled: !!session?.session.token,
   });
+
+  const renderMediaGrid = (media: any[]) => {
+    const count = media.length;
+    
+    // Show only first 3 photos
+    const displayMedia = media.slice(0, 3);
+    const hasMore = count > 3;
+
+    if (count === 1) {
+      // Single image/video - full width
+      return (
+        <div className="w-full aspect-[4/3] bg-gray-100 rounded-lg overflow-hidden">
+          <Image
+            src={media[0].url}
+            alt="Post content"
+            fill
+            priority
+            loading="eager"
+            placeholder="blur"
+            blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nMTAwJScgaGVpZ2h0PScxMDAlJyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnPjxyZWN0IHdpZHRoPScxMDAlJyBoZWlnaHQ9JzEwMCUnIGZpbGw9JyNlZWUnLz48L3N2Zz4="
+            className="object-cover rounded-lg"
+          />
+        </div>
+      );
+    }
+
+    if (count === 2) {
+      // Two images - side by side
+      return (
+        <div className="grid grid-cols-2 gap-1">
+          {displayMedia.map((item, index) => (
+            <div
+              key={index}
+              className="relative aspect-square bg-gray-100 rounded-lg overflow-hidden"
+            >
+              <Image
+                src={item.url}
+                alt={`Post content ${index + 1}`}
+                fill
+                priority={index === 0}
+                loading={index === 0 ? "eager" : "lazy"}
+                placeholder="blur"
+                blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nMTAwJScgaGVpZ2h0PScxMDAlJyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnPjxyZWN0IHdpZHRoPScxMDAlJyBoZWlnaHQ9JzEwMCUnIGZpbGw9JyNlZWUnLz48L3N2Zz4="
+                className="object-cover rounded-lg"
+              />
+            </div>
+          ))}
+        </div>
+      );
+    }
+
+    // Three or more images - first full width, others in 2-column grid
+    return (
+      <div className="space-y-1">
+        {/* First image - full width */}
+        <div className="w-full aspect-[4/3] bg-gray-100 rounded-lg overflow-hidden">
+          <Image
+            src={media[0].url}
+            alt="Post content 1"
+            fill
+            priority
+            loading="eager"
+            placeholder="blur"
+            blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nMTAwJScgaGVpZ2h0PScxMDAlJyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnPjxyZWN0IHdpZHRoPScxMDAlJyBoZWlnaHQ9JzEwMCUnIGZpbGw9JyNlZWUnLz48L3N2Zz4="
+            className="object-cover rounded-lg"
+          />
+        </div>
+        
+        {/* Remaining images in 2-column grid */}
+        <div className="grid grid-cols-2 gap-1">
+          {displayMedia.slice(1).map((item, index) => (
+            <div
+              key={index + 1}
+              className="relative aspect-square bg-gray-100 rounded-lg overflow-hidden"
+            >
+              <Image
+                src={item.url}
+                alt={`Post content ${index + 2}`}
+                fill
+                priority={false}
+                loading="lazy"
+                placeholder="blur"
+                blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nMTAwJScgaGVpZ2h0PScxMDAlJyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnPjxyZWN0IHdpZHRoPScxMDAlJyBoZWlnaHQ9JzEwMCUnIGZpbGw9JyNlZWUnLz48L3N2Zz4="
+                className="object-cover rounded-lg"
+              />
+              
+              {/* More button overlay on the last visible image */}
+              {index === 1 && hasMore && (
+                <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center cursor-pointer">
+                  <span className="text-white text-xl font-bold">+{count - 3}</span>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
   return (
     <div className="bg-white rounded-xl shadow-sm overflow-hidden mb-6 w-full border border-gray-100">
       {/* Post Header */}
@@ -142,7 +240,7 @@ export const PostCard = ({
 
       {content.media &&
         content.media?.length > 0 &&
-        content.media[0].type == "image" && (
+        content.media.every(media => media.type === "image") && (
           <PostMediaDialog
             media={content.media}
             comments={commentToShow ?? ([] as Comment[])}
@@ -155,17 +253,8 @@ export const PostCard = ({
               isVerified: authorIsVerified,
             }}
             trigger={
-              <div className="relative w-full aspect-[4/2.5] bg-gray-100 cursor-pointer">
-                <Image
-                  src={content.media[0].url}
-                  alt="Post content"
-                  fill
-                  priority={false}
-                  loading="lazy"
-                  placeholder="blur"
-                  blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nMTAwJScgaGVpZ2h0PScxMDAlJyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnPjxyZWN0IHdpZHRoPScxMDAlJyBoZWlnaHQ9JzEwMCUnIGZpbGw9JyNlZWUnLz48L3N2Zz4="
-                  className="object-cover"
-                />
+              <div className="relative w-full bg-gray-100 cursor-pointer rounded-lg overflow-hidden">
+                {renderMediaGrid(content.media)}
               </div>
             }
           />
@@ -173,10 +262,10 @@ export const PostCard = ({
 
       {content.media &&
         content.media?.length > 0 &&
-        content.media[0].type == "video" && (
+        content.media.some(media => media.type === "video") && (
           <div className="aspect-video relative z-0 w-full">
             <BeautifulVideo
-              src={content.media[0].url}
+              src={content.media.find(media => media.type === "video")?.url || ""}
               plyrOptions={{
                 invertTime: false,
                 quality: { default: 720, options: [1080, 720, 480] },

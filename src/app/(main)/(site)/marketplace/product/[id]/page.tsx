@@ -37,6 +37,7 @@ const ProductPage = () => {
         _id={product._id}
         title={product.title}
         description={product.description}
+        price={product.price}
         images={product.images ?? []}
         seller={{
           name: product.seller?.name,
@@ -46,6 +47,7 @@ const ProductPage = () => {
         isOwner={data.isOwner}
         avgRating={data?.averageRating}
         contact={product.contact}
+        location={product.location}
       />
     </div>
   );

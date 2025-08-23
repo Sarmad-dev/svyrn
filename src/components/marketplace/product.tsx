@@ -12,6 +12,7 @@ import {
   ChevronRight,
   Mail,
   Phone,
+  MapPin,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -34,6 +35,10 @@ type ProductDetailProps = {
   _id: string;
   title: string;
   description: string;
+  price: {
+    amount: number;
+    currency: string;
+  };
   images: string[];
   seller: {
     name: string;
@@ -46,18 +51,30 @@ type ProductDetailProps = {
     email: string;
     phone: string;
   };
+  location?: {
+    address?: string;
+    city?: string;
+    state?: string;
+    country?: string;
+    coordinates?: {
+      latitude: number;
+      longitude: number;
+    };
+  };
 };
 
 export const ProductDetail: React.FC<ProductDetailProps> = ({
   _id,
   title,
   description,
+  price,
   images,
   seller,
   reviews,
   isOwner,
   avgRating,
   contact,
+  location,
 }) => {
   const { data: session, isPending } = authClient.useSession();
   const [sliderRef, instanceRef] = useKeenSlider({ loop: true });
@@ -139,9 +156,17 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
         </button>
       </div>
 
-      {/* Title & Description */}
+      {/* Title, Price & Description */}
       <div>
-        <h1 className="text-3xl font-semibold mb-2">{title}</h1>
+        <div className="flex items-center justify-between mb-2">
+          <h1 className="text-3xl font-semibold">{title}</h1>
+          <div className="text-right">
+            <p className="text-2xl font-bold text-blue-600">
+              ${price.amount}
+            </p>
+            <p className="text-sm text-gray-500">{price.currency}</p>
+          </div>
+        </div>
         <p className="text-gray-600">{description}</p>
       </div>
 
@@ -167,6 +192,52 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
               <p className="text-sm text-gray-500">{contact?.phone}</p>
             ) : (
               <p className="text-sm text-gray-500">N/A</p>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Location Info */}
+      <div className="p-4 bg-muted rounded-lg shadow">
+        <div className="flex items-start gap-3">
+          <MapPin className="w-5 h-5 text-gray-500 mt-0.5 flex-shrink-0" />
+          <div className="space-y-1">
+            <p className="font-medium text-gray-900">Location</p>
+            {location && (location.address || location.city || location.state || location.country) ? (
+              <>
+                {location.address && (
+                  <p className="text-sm text-gray-600 break-words">{location.address}</p>
+                )}
+                {[location.city, location.state, location.country].filter(Boolean).length > 0 && (
+                  <p className="text-sm text-gray-500">
+                    {[location.city, location.state, location.country]
+                      .filter(Boolean)
+                      .join(", ")}
+                  </p>
+                )}
+                {location.coordinates && (
+                  <div className="flex items-center gap-2">
+                    <p className="text-xs text-gray-400">
+                      Coordinates: {location.coordinates.latitude.toFixed(6)}, {location.coordinates.longitude.toFixed(6)}
+                    </p>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="text-xs h-6 px-2"
+                      onClick={() => {
+                        if (location.coordinates) {
+                          const url = `https://www.google.com/maps?q=${location.coordinates.latitude},${location.coordinates.longitude}`;
+                          window.open(url, '_blank');
+                        }
+                      }}
+                    >
+                      View on Map
+                    </Button>
+                  </div>
+                )}
+              </>
+            ) : (
+              <p className="text-sm text-gray-500">No location information available</p>
             )}
           </div>
         </div>

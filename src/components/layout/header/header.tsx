@@ -1,11 +1,12 @@
 "use client";
-import { Bell, Home, MessageCircle } from "lucide-react";
 import Image from "next/image";
 import React from "react";
 import Link from "next/link";
 import ProfileDropdown from "./profile-dropdown";
 import MobileSheet from "../sidebar/mobile-sheet";
 import GlobalSearchDropdown from "@/components/global-search";
+import NotificationDropdown from "./notification-dropdown";
+import ConversationDropdown from "./conversation-dropdown";
 
 const Header = () => {
   return (
@@ -22,18 +23,25 @@ const Header = () => {
           />
         </Link>
 
-        {/* Center Section: Search Bar (Hidden on Mobile) */}
-        <div className="hidden md:block">
+        {/* Center Section: Search Bar (Desktop Only) */}
+        <div className="hidden md:block flex-1 max-w-2xl mx-4">
           <GlobalSearchDropdown />
         </div>
 
-        {/* Right Section: Icons + DropdownMenu (Large Screens Only) */}
-        <div className="flex items-center md:space-x-4">
+        {/* Right Section: Icons + DropdownMenu */}
+        <div className="flex items-center space-x-2 md:space-x-4">
           <div className="hidden md:flex items-center gap-4">
-            <Home className="h-6 w-6" color="white" />
-            <MessageCircle className="h-6 w-6" color="white" />
-            <Bell className="h-6 w-6" color="white" />
+            <ConversationDropdown />
+            <NotificationDropdown />
           </div>
+          
+          {/* Mobile Icons */}
+          <div className="md:hidden flex items-center gap-2">
+            <ConversationDropdown />
+            <NotificationDropdown />
+            <GlobalSearchDropdown />
+          </div>
+          
           <ProfileDropdown />
         </div>
       </div>

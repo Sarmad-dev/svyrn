@@ -14,6 +14,7 @@ import { Button } from "../ui/button";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createProduct } from "@/lib/actions/product.action";
 import { authClient } from "@/lib/auth-client";
+import { LocationInput } from "../ui/location-input";
 
 const formSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -22,6 +23,16 @@ const formSchema = z.object({
   privacy: z.enum(["public", "friends"]),
   images: z.any(),
   phone: z.string().optional(),
+  location: z.object({
+    address: z.string(),
+    city: z.string(),
+    state: z.string(),
+    country: z.string(),
+    coordinates: z.object({
+      latitude: z.number(),
+      longitude: z.number(),
+    }).optional(),
+  }).optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -29,6 +40,13 @@ type FormValues = z.infer<typeof formSchema>;
 export default function CreateProductForm() {
   const { data: session } = authClient.useSession();
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const [locationData, setLocationData] = useState<{
+    address: string;
+    city: string;
+    state: string;
+    country: string;
+    coordinates?: { latitude: number; longitude: number };
+  } | null>(null);
 
   const queryClient = useQueryClient();
 
@@ -43,6 +61,7 @@ export default function CreateProductForm() {
           images: data.images as string[],
           privacy: data.privacy,
           title: data.title,
+          location: locationData || undefined,
           contact: {
             email: session?.user.email as string,
             phone: data.phone || '',
@@ -72,6 +91,16 @@ export default function CreateProductForm() {
 
   const onSubmit = async (data: FormValues) => {
     await mutateAsync(data);
+  };
+
+  const handleLocationChange = (location: {
+    address: string;
+    city: string;
+    state: string;
+    country: string;
+    coordinates?: { latitude: number; longitude: number };
+  }) => {
+    setLocationData(location);
   };
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -130,16 +159,23 @@ export default function CreateProductForm() {
       </div>
 
       <div>
-        <Label htmlFor="amount">Phone</Label>
+        <Label htmlFor="phone">Phone</Label>
         <Input
           id="phone"
           {...register("phone")}
           placeholder="Phone"
         />
-        {errors.amount && (
+        {errors.phone && (
           <p className="text-sm text-red-500">{errors.phone?.message}</p>
         )}
       </div>
+
+      {/* Location */}
+      <LocationInput
+        onChange={handleLocationChange}
+        placeholder="Search for your location..."
+        label="Location"
+      />
 
       {/* Description */}
       <div>

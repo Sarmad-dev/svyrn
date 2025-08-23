@@ -7,7 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import { Star, StarHalf, StarOff } from "lucide-react";
+import { Star, StarHalf, StarOff, MapPin } from "lucide-react";
 import Link from "next/link";
 
 interface ProductCardProps {
@@ -16,6 +16,11 @@ interface ProductCardProps {
   title: string;
   price: number;
   rating: number; // from 0 to 5
+  location?: {
+    city?: string;
+    state?: string;
+    country?: string;
+  };
 }
 
 const ProductCard = ({
@@ -24,6 +29,7 @@ const ProductCard = ({
   price,
   rating,
   _id,
+  location,
 }: ProductCardProps) => {
   return (
     <Link href={`/marketplace/product/${_id}`}>
@@ -67,6 +73,18 @@ const ProductCard = ({
                 )}
               </div>
             </div>
+
+            {/* Location */}
+            {location && (location.city || location.state || location.country) && (
+              <div className="flex items-center gap-1 mt-2 text-sm text-gray-500">
+                <MapPin className="w-4 h-4" />
+                <span className="truncate">
+                  {[location.city, location.state, location.country]
+                    .filter(Boolean)
+                    .join(", ")}
+                </span>
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>

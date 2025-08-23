@@ -141,6 +141,16 @@ type ProductCard = {
   description: string;
   price: { amount: number; currency: string };
   averageRating: number; // from 0 to 5
+  location?: {
+    address?: string;
+    city?: string;
+    state?: string;
+    country?: string;
+    coordinates?: {
+      latitude: number;
+      longitude: number;
+    };
+  };
 };
 
 interface ChatContact {

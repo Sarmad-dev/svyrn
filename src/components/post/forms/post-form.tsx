@@ -16,7 +16,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { createPost } from "@/lib/actions/post.action";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
-import MediaUploader, { UploadedFile } from "@/components/media-uploader";
+import MultiMediaUploader, { UploadedFile } from "@/components/multi-media-uploader";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const privacyOptions = [
@@ -54,15 +54,20 @@ const PostForm = ({
     resolver: zodResolver(createPostSchema),
     defaultValues: {
       text: "",
-      base64: "",
       groupId: "",
       pageId: "",
       privacy: "public",
     },
   });
 
-  const handleUpload = ({ preview }: UploadedFile) => {
-    form.setValue("base64", preview);
+  const handleUpload = (files: UploadedFile[]) => {
+    if (files.length === 0) {
+      form.setValue("mediaFiles", []);
+      return;
+    }
+    
+    // Set all files as mediaFiles (using base64 for backend)
+    form.setValue("mediaFiles", files.map(file => file.base64));
   };
 
   const onSubmit = async (data: z.infer<typeof createPostSchema>) => {
@@ -91,12 +96,12 @@ const PostForm = ({
         />
 
         <FormField
-          name="base64"
+          name="mediaFiles"
           control={form.control}
           render={() => (
             <FormItem>
               <FormControl>
-                <MediaUploader onUpload={handleUpload} />
+                <MultiMediaUploader onUpload={handleUpload} maxFiles={10} />
               </FormControl>
             </FormItem>
           )}

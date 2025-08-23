@@ -113,26 +113,26 @@ export default function PagesPage() {
                 {page.name.charAt(0).toUpperCase()}
               </AvatarFallback>
             </Avatar>
-            <div className="flex-1">
+            <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
-                <h3 className="font-semibold text-gray-900">{page.name}</h3>
+                <h3 className="font-semibold text-gray-900 truncate">{page.name}</h3>
                 {page.isVerified && (
-                  <Star className="w-4 h-4 text-blue-500 fill-current" />
+                  <Star className="w-4 h-4 text-blue-500 fill-current flex-shrink-0" />
                 )}
               </div>
               {page.username && (
-                <p className="text-sm text-gray-500">@{page.username}</p>
+                <p className="text-sm text-gray-500 truncate">@{page.username}</p>
               )}
-              <div className="flex items-center gap-2 mt-1">
+              <div className="flex items-center gap-2 mt-1 flex-wrap">
                 <Badge 
                   variant="secondary" 
-                  className={`text-xs ${categoryColors[page.category] || categoryColors.other}`}
+                  className={`text-xs flex-shrink-0 ${categoryColors[page.category] || categoryColors.other}`}
                 >
                   {page.category}
                 </Badge>
-                <div className="flex items-center gap-1 text-gray-500">
+                <div className="flex items-center gap-1 text-gray-500 min-w-0">
                   {privacyIcons[page.privacy]}
-                  <span className="text-xs capitalize">{page.privacy}</span>
+                  <span className="text-xs capitalize truncate">{page.privacy}</span>
                 </div>
               </div>
             </div>
@@ -151,22 +151,22 @@ export default function PagesPage() {
       </CardHeader>
       <CardContent className="pt-0">
         {page.description && (
-          <p className="text-gray-600 text-sm mb-3 line-clamp-2">{page.description}</p>
+          <p className="text-gray-600 text-sm mb-3 line-clamp-2 break-words">{page.description}</p>
         )}
-        <div className="flex items-center justify-between text-sm text-gray-500">
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-1">
-              <Users className="w-4 h-4" />
-              <span>{page.followersCount || 0} followers</span>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between text-sm text-gray-500 gap-2">
+          <div className="flex items-center gap-4 flex-wrap">
+            <div className="flex items-center gap-1 min-w-0">
+              <Users className="w-4 h-4 flex-shrink-0" />
+              <span className="truncate">{page.followersCount || 0} followers</span>
             </div>
-            <div className="flex items-center gap-1">
-              <BookOpen className="w-4 h-4" />
-              <span>{page.postsCount || 0} posts</span>
+            <div className="flex items-center gap-1 min-w-0">
+              <BookOpen className="w-4 h-4 flex-shrink-0" />
+              <span className="truncate">{page.postsCount || 0} posts</span>
             </div>
           </div>
-          <div className="flex items-center gap-1">
-            <Calendar className="w-4 h-4" />
-            <span>{new Date(page.createdAt).toLocaleDateString()}</span>
+          <div className="flex items-center gap-1 min-w-0">
+            <Calendar className="w-4 h-4 flex-shrink-0" />
+            <span className="truncate">{new Date(page.createdAt).toLocaleDateString()}</span>
           </div>
         </div>
         <div className="mt-3 pt-3 border-t border-gray-100">

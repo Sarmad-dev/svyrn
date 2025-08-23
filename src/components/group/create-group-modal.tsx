@@ -79,8 +79,8 @@ export const CreateGroupModal: React.FC<CreateGroupModalProps> = ({
   const descCharCount = formData.description.length;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4 relative">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-lg p-6 w-full max-w-md mx-auto relative max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div>
@@ -151,10 +151,10 @@ export const CreateGroupModal: React.FC<CreateGroupModalProps> = ({
             <label className="block text-sm font-medium text-gray-700 mb-3">
               Choose
             </label>
-            <div className="flex gap-4">
+            <div className="flex flex-col sm:flex-row gap-4">
               <button
                 onClick={() => handlePrivacyChange("public")}
-                className={`flex-1 flex items-center gap-3 p-3 rounded-lg border-2 transition-colors ${
+                className={`flex-1 flex items-center gap-3 p-3 rounded-lg border-2 transition-colors min-w-0 ${
                   formData.privacy === "public"
                     ? "border-blue-500 bg-blue-50"
                     : "border-gray-200 hover:border-gray-300"
@@ -176,7 +176,7 @@ export const CreateGroupModal: React.FC<CreateGroupModalProps> = ({
                     viewBox="0 0 24 24">
                     <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
                   </svg>
-                  <span className="text-sm font-medium text-gray-700">
+                  <span className="text-sm font-medium text-gray-700 truncate">
                     Public
                   </span>
                 </div>
@@ -184,7 +184,7 @@ export const CreateGroupModal: React.FC<CreateGroupModalProps> = ({
 
               <button
                 onClick={() => handlePrivacyChange("private")}
-                className={`flex-1 flex items-center gap-3 p-3 rounded-lg border-2 transition-colors ${
+                className={`flex-1 flex items-center gap-3 p-3 rounded-lg border-2 transition-colors min-w-0 ${
                   formData.privacy === "private"
                     ? "border-blue-500 bg-blue-50"
                     : "border-gray-200 hover:border-gray-300"
@@ -206,7 +206,7 @@ export const CreateGroupModal: React.FC<CreateGroupModalProps> = ({
                     viewBox="0 0 24 24">
                     <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z" />
                   </svg>
-                  <span className="text-sm font-medium text-gray-700">
+                  <span className="text-sm font-medium text-gray-700 truncate">
                     Private
                   </span>
                 </div>

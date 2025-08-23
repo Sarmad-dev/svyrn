@@ -15,15 +15,17 @@ import React from "react";
 const Marketplace = () => {
   const { data: session } = authClient.useSession();
   const [searchQuery, setSearchQuery] = React.useState<string>("");
+  const [locationQuery, setLocationQuery] = React.useState<string>("");
   const [currentPage, setCurrentPage] = React.useState<number>(1);
   const [limit] = React.useState<number>(12); // Products per page
 
   const { data: productsData, isLoading } = useQuery({
-    queryKey: ["products", searchQuery, currentPage, limit],
+    queryKey: ["products", searchQuery, locationQuery, currentPage, limit],
     queryFn: async () =>
       await getProducts({
         token: session?.session.token as string,
         search: searchQuery,
+        location: locationQuery,
         page: currentPage,
         limit: limit,
       }),
@@ -38,10 +40,10 @@ const Marketplace = () => {
     pages: 0,
   };
 
-  // Reset to page 1 when search query changes
+  // Reset to page 1 when search query or location query changes
   React.useEffect(() => {
     setCurrentPage(1);
-  }, [searchQuery]);
+  }, [searchQuery, locationQuery]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -67,11 +69,17 @@ const Marketplace = () => {
           </CreateProductDialog>
         </div>
       </div>
-      <div className="flex gap-5 items-center mt-5 max-md:px-3">
+      <div className="flex flex-col sm:flex-row gap-3 sm:gap-5 items-center mt-5 max-md:px-3">
         <Input
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search for products"
+          className="flex-1 outline-gray-700"
+        />
+        <Input
+          value={locationQuery}
+          onChange={(e) => setLocationQuery(e.target.value)}
+          placeholder="Search by location"
           className="flex-1 outline-gray-700"
         />
       </div>
@@ -97,6 +105,7 @@ const Marketplace = () => {
                 imageUrl={product.images[0]}
                 rating={product.averageRating}
                 title={product.title}
+                location={product.location}
               />
             ))}
           </div>

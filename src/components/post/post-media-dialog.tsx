@@ -1,7 +1,8 @@
 import * as Dialog from "@radix-ui/react-dialog";
-import { X, Bookmark, MessageCircle, Share2 } from "lucide-react";
+import { X, Bookmark, MessageCircle, Share2, ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import { useKeenSlider } from "keen-slider/react";
+import React from "react";
 import "keen-slider/keen-slider.min.css";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -42,9 +43,20 @@ export const PostMediaDialog = ({
   currentUser,
   author,
 }: PostMediaDialogProps) => {
-  const [sliderRef] = useKeenSlider<HTMLDivElement>({
+  const [sliderRef, instanceRef] = useKeenSlider<HTMLDivElement>({
     loop: true,
+    initial: 0,
   });
+
+  const [currentSlide, setCurrentSlide] = React.useState(0);
+
+  React.useEffect(() => {
+    if (instanceRef.current) {
+      instanceRef.current.on("slideChanged", (slider) => {
+        setCurrentSlide(slider.track.details.rel);
+      });
+    }
+  }, [instanceRef]);
 
   return (
     <Dialog.Root>
@@ -63,23 +75,52 @@ export const PostMediaDialog = ({
             </Dialog.Close>
 
             {/* Left: Media Display */}
-            <div className="w-[60%] max-md:w-full h-full flex justify-center items-center bg-black">
+            <div className="w-[60%] max-md:w-full h-full flex justify-center items-center bg-black relative">
               {media.length > 1 ? (
-                <div ref={sliderRef} className="keen-slider w-full h-full">
-                  {media.map((item, idx) => (
-                    <div
-                      key={idx}
-                      className="keen-slider__slide flex justify-center items-center">
-                      <Image
-                        src={item.url}
-                        alt={item.caption}
-                        width={800}
-                        height={800}
-                        className="object-contain max-md:object-cover max-h-[85vh] w-auto"
+                <>
+                  <div ref={sliderRef} className="keen-slider w-full h-full">
+                    {media.map((item, idx) => (
+                      <div
+                        key={idx}
+                        className="keen-slider__slide flex justify-center items-center">
+                        <Image
+                          src={item.url}
+                          alt={item.caption}
+                          width={800}
+                          height={800}
+                          className="object-contain max-md:object-cover max-h-[85vh] w-auto"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                  
+                  {/* Navigation Arrows */}
+                  <button
+                    onClick={() => instanceRef.current?.prev()}
+                    className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 hover:bg-opacity-75 text-white p-2 rounded-full transition-all duration-200"
+                  >
+                    <ChevronLeft size={24} />
+                  </button>
+                  <button
+                    onClick={() => instanceRef.current?.next()}
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 hover:bg-opacity-75 text-white p-2 rounded-full transition-all duration-200"
+                  >
+                    <ChevronRight size={24} />
+                  </button>
+                  
+                  {/* Slide Indicator */}
+                  <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+                    {media.map((_, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => instanceRef.current?.moveToIdx(idx)}
+                        className={`w-2 h-2 rounded-full transition-all duration-200 ${
+                          idx === currentSlide ? 'bg-white' : 'bg-white bg-opacity-50'
+                        }`}
                       />
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                </>
               ) : (
                 <Image
                   src={media[0].url}

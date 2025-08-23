@@ -12,6 +12,13 @@ export const createProduct = async ({
     description: string;
     privacy: "friends" | "public";
     images: string[];
+    location?: {
+      address: string;
+      city: string;
+      state: string;
+      country: string;
+      coordinates?: { latitude: number; longitude: number };
+    };
     contact: {
       email: string;
       phone: string;
@@ -49,10 +56,12 @@ export const createProduct = async ({
 export const getProducts = async ({
   token,
   search,
+  location,
   page = 1,
   limit = 12,
 }: {
   search?: string;
+  location?: string;
   token: string;
   page?: number;
   limit?: number;
@@ -66,6 +75,10 @@ export const getProducts = async ({
 
     if (search) {
       params.append('search', search);
+    }
+
+    if (location) {
+      params.append('location', location);
     }
 
     const response = await fetch(
