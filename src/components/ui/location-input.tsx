@@ -29,6 +29,57 @@ interface PlaceResult {
   };
 }
 
+interface GoogleMapsServices {
+  AutocompleteService: new () => GoogleAutocompleteService;
+  PlacesService: new (div: HTMLDivElement) => GooglePlacesService;
+  PlacesServiceStatus: {
+    OK: string;
+    ZERO_RESULTS: string;
+    OVER_QUERY_LIMIT: string;
+    REQUEST_DENIED: string;
+    INVALID_REQUEST: string;
+    NOT_FOUND: string;
+    UNKNOWN_ERROR: string;
+  };
+}
+
+interface GoogleAutocompleteService {
+  getPlacePredictions(
+    request: {
+      input: string;
+      types?: string[];
+    },
+    callback: (predictions: PlaceResult[], status: string) => void
+  ): void;
+}
+
+interface GooglePlacesService {
+  getDetails(
+    request: {
+      placeId: string;
+      fields: string[];
+    },
+    callback: (place: GooglePlaceDetails, status: string) => void
+  ): void;
+}
+
+interface GooglePlaceDetails {
+  address_components: GoogleAddressComponent[];
+  formatted_address: string;
+  geometry: {
+    location: {
+      lat(): number;
+      lng(): number;
+    };
+  };
+}
+
+interface GoogleAddressComponent {
+  long_name: string;
+  short_name: string;
+  types: string[];
+}
+
 export const LocationInput: React.FC<LocationInputProps> = ({
   value = "",
   onChange,
@@ -42,8 +93,8 @@ export const LocationInput: React.FC<LocationInputProps> = ({
   const [showDropdown, setShowDropdown] = useState(false);
   const [isGoogleLoaded, setIsGoogleLoaded] = useState(false);
   const [googleError, setGoogleError] = useState<string | null>(null);
-  const autocompleteService = useRef<any>(null);
-  const placesService = useRef<any>(null);
+  const autocompleteService = useRef<GoogleAutocompleteService | null>(null);
+  const placesService = useRef<GooglePlacesService | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   // Load Google Places API
@@ -59,7 +110,7 @@ export const LocationInput: React.FC<LocationInputProps> = ({
           return;
         }
 
-        const services = getGoogleMapsServices();
+        const services = getGoogleMapsServices() as GoogleMapsServices;
         setIsGoogleLoaded(true);
         autocompleteService.current = new services.AutocompleteService();
         placesService.current = new services.PlacesService(
@@ -101,7 +152,7 @@ export const LocationInput: React.FC<LocationInputProps> = ({
 
     setIsLoading(true);
     try {
-      const services = getGoogleMapsServices();
+      const services = getGoogleMapsServices() as GoogleMapsServices;
       autocompleteService.current.getPlacePredictions(
         {
           input: query,
@@ -130,13 +181,13 @@ export const LocationInput: React.FC<LocationInputProps> = ({
     if (!placesService.current) return;
 
     try {
-      const services = getGoogleMapsServices();
+      const services = getGoogleMapsServices() as GoogleMapsServices;
       placesService.current.getDetails(
         {
           placeId: prediction.place_id,
           fields: ['address_components', 'formatted_address', 'geometry'],
         },
-        (place: any, status: string) => {
+        (place: GooglePlaceDetails, status: string) => {
           if (status === services.PlacesServiceStatus.OK) {
             const locationData = parsePlaceDetails(place);
             setInputValue(locationData.address);
@@ -153,13 +204,13 @@ export const LocationInput: React.FC<LocationInputProps> = ({
     }
   };
 
-  const parsePlaceDetails = (place: any) => {
+  const parsePlaceDetails = (place: GooglePlaceDetails) => {
     const addressComponents = place.address_components || [];
     let city = '';
     let state = '';
     let country = '';
 
-    addressComponents.forEach((component: any) => {
+    addressComponents.forEach((component: GoogleAddressComponent) => {
       const types = component.types;
       if (types.includes('locality')) {
         city = component.long_name;

@@ -1,6 +1,70 @@
+interface GoogleMapsAPI {
+  maps: {
+    places: {
+      AutocompleteService: new () => GoogleAutocompleteService;
+      PlacesService: new (div: HTMLDivElement) => GooglePlacesService;
+      PlacesServiceStatus: {
+        OK: string;
+        ZERO_RESULTS: string;
+        OVER_QUERY_LIMIT: string;
+        REQUEST_DENIED: string;
+        INVALID_REQUEST: string;
+        NOT_FOUND: string;
+        UNKNOWN_ERROR: string;
+      };
+    };
+  };
+}
+
+interface GoogleAutocompleteService {
+  getPlacePredictions(
+    request: {
+      input: string;
+      types?: string[];
+    },
+    callback: (predictions: GooglePlacePrediction[], status: string) => void
+  ): void;
+}
+
+interface GooglePlacesService {
+  getDetails(
+    request: {
+      placeId: string;
+      fields: string[];
+    },
+    callback: (place: GooglePlaceDetails, status: string) => void
+  ): void;
+}
+
+interface GooglePlacePrediction {
+  place_id: string;
+  description: string;
+  structured_formatting: {
+    main_text: string;
+    secondary_text: string;
+  };
+}
+
+interface GooglePlaceDetails {
+  address_components: GoogleAddressComponent[];
+  formatted_address: string;
+  geometry: {
+    location: {
+      lat(): number;
+      lng(): number;
+    };
+  };
+}
+
+interface GoogleAddressComponent {
+  long_name: string;
+  short_name: string;
+  types: string[];
+}
+
 declare global {
   interface Window {
-    google: any;
+    google: GoogleMapsAPI;
     googleMapsLoaded: boolean;
     googleMapsPromise: Promise<void> | null;
   }
@@ -60,7 +124,19 @@ export const isGoogleMapsLoaded = (): boolean => {
 };
 
 // Get Google Maps services safely
-export const getGoogleMapsServices = () => {
+export const getGoogleMapsServices = (): {
+  AutocompleteService: new () => GoogleAutocompleteService;
+  PlacesService: new (div: HTMLDivElement) => GooglePlacesService;
+  PlacesServiceStatus: {
+    OK: string;
+    ZERO_RESULTS: string;
+    OVER_QUERY_LIMIT: string;
+    REQUEST_DENIED: string;
+    INVALID_REQUEST: string;
+    NOT_FOUND: string;
+    UNKNOWN_ERROR: string;
+  };
+} => {
   if (!isGoogleMapsLoaded()) {
     throw new Error('Google Maps API is not loaded');
   }
