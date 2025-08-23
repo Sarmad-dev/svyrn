@@ -404,7 +404,39 @@ export default function GlobalSearchDropdown() {
             <SheetTitle>Search</SheetTitle>
           </SheetHeader>
           <div className="p-4 space-y-4">
-            <SearchInput />
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Input
+                type="text"
+                className="pl-10 pr-4 py-3 bg-gray-50 border-gray-200 focus:bg-white focus:border-blue-500 transition-all duration-200"
+                placeholder="Search for users, groups, pages, ads, products..."
+                value={query}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setQuery(value);
+                  if (value.length >= 2) {
+                    setShowDropdown(true);
+                  }
+                }}
+                onFocus={() => {
+                  if (query.length >= 2) {
+                    setShowDropdown(true);
+                  }
+                }}
+              />
+              {query && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0"
+                  onClick={() => {
+                    setQuery("");
+                    setResults(null);
+                  }}>
+                  <X className="h-3 w-3" />
+                </Button>
+              )}
+            </div>
             <SearchResults />
           </div>
         </SheetContent>

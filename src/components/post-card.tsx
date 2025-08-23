@@ -153,7 +153,7 @@ export const PostCard = ({
         </div>
         
         {/* Remaining images in 2-column grid */}
-        <div className="grid grid-cols-2 gap-1">
+        <div className="grid grid-cols-2">
           {displayMedia.slice(1).map((item, index) => (
             <div
               key={index + 1}
