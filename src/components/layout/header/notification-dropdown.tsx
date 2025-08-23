@@ -145,7 +145,7 @@ const NotificationDropdown = () => {
           <div className="flex flex-col items-center justify-center p-6 text-center">
             <Bell className="w-8 h-8 text-gray-400 mb-2" />
             <p className="text-sm text-gray-500">No notifications yet</p>
-            <p className="text-xs text-gray-400">We'll notify you when something happens</p>
+            <p className="text-xs text-gray-400">We&apos;ll notify you when something happens</p>
           </div>
         ) : (
           notifications.map((notification) => (
