@@ -111,14 +111,14 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
       <div className="pt-16 px-6 pb-6">
         <h1 className="text-2xl font-bold text-gray-900 mb-2">{name}</h1>
         <p className="text-gray-600 mb-2">{description}</p>
-        <a
+        {website && <a
           href={website.startsWith("http") ? website : `https://${website}`}
           target="_blank"
           rel="noopener noreferrer"
           className="text-[#4eaae9] hover:underline text-sm font-medium"
         >
           {website}
-        </a>
+        </a>}
 
         {/* Stats */}
         <div className="flex items-center gap-8 mt-4 pt-4 border-t border-gray-200">
