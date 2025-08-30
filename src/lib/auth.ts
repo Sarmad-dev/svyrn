@@ -25,6 +25,17 @@ export const auth = betterAuth({
       await sendResetEmail(user.email, url);
     },
   },
+  socialProviders: {
+    google: {
+      prompt: 'select_account',
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    },
+    apple: {
+      clientId: process.env.APPLE_CLIENT_ID!,
+      clientSecret: process.env.APPLE_CLIENT_SECRET!,
+    }
+  },
   user: {
     modelName: "users",
   },
